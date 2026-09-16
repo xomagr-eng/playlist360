@@ -1,0 +1,1006 @@
+﻿<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>PLAYLIST 360°</title>
+<!-- standalone: no external manifest -->
+<meta name="theme-color" content="#0d0d0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Playlist 360">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZjNiNDUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTAxZTJiIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzBkMGQwZiIvPgogIDxyZWN0IHg9IjQ2IiB5PSI0NiIgd2lkdGg9IjQyMCIgaGVpZ2h0PSI0MjAiIHJ4PSIxMjAiIGZpbGw9InVybCgjZykiLz4KICA8ZyBmaWxsPSIjZmZmIj4KICAgIDxyZWN0IHg9IjIyMiIgeT0iMTgyIiB3aWR0aD0iMTUiIGhlaWdodD0iMTc2Ii8+CiAgICA8cmVjdCB4PSIzNTYiIHk9IjE1MCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE3NiIvPgogICAgPHBhdGggZD0iTTIyMiAxODIgTDM3MSAxNTAgTDM3MSAxOTYgTDIyMiAyMjggWiIvPgogICAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjM1NiIgcng9IjM2IiByeT0iMjciIHRyYW5zZm9ybT0icm90YXRlKC0xOCAyMDAgMzU2KSIvPgogICAgPGVsbGlwc2UgY3g9IjMzNCIgY3k9IjMyNCIgcng9IjM2IiByeT0iMjciIHRyYW5zZm9ybT0icm90YXRlKC0xOCAzMzQgMzI0KSIvPgogIDwvZz4KPC9zdmc+Cg==" type="image/svg+xml">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<style>
+:root{
+  --bg:#0d0d0f; --bg2:#151518; --bg3:#1c1c21; --panel:#17171b;
+  --line:#2a2a31; --txt:#f4f4f6; --dim:#9a9aa4; --dim2:#6a6a74;
+  --red:#e01e2b; --red2:#ff3b45; --redglow:rgba(224,30,43,.45);
+  --gold:#e6b34a;
+  --radius:14px; --sh:0 10px 30px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:radial-gradient(1200px 700px at 80% -10%,#22121a 0%,transparent 55%),
+             radial-gradient(900px 600px at -10% 110%,#1a0d10 0%,transparent 50%),
+             var(--bg);
+  color:var(--txt);
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  display:flex;flex-direction:column;overflow:hidden;
+  -webkit-user-select:none;user-select:none;
+}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#33333c;border-radius:20px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- HEADER ---------- */
+header{
+  display:flex;align-items:center;gap:12px;padding:10px 16px;
+  padding-top:calc(10px + env(safe-area-inset-top));
+  background:linear-gradient(180deg,#1a1013,#121215);
+  border-bottom:1px solid var(--line);z-index:20;
+}
+.logo{font-size:20px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo b{color:var(--red2)}
+.logo .disc{font-size:22px;animation:spin 6s linear infinite;animation-play-state:paused}
+body.playing .logo .disc{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+.htools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  background:var(--bg3);border:1px solid var(--line);border-radius:10px;
+  padding:9px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+  transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--red);color:#fff;transform:translateY(-1px)}
+.btn.red{background:linear-gradient(180deg,var(--red2),var(--red));border-color:var(--red2);color:#fff;box-shadow:0 6px 18px var(--redglow)}
+.btn.sm{padding:7px 10px;font-size:12px}
+
+/* ---------- LAYOUT ---------- */
+.main{flex:1;display:flex;min-height:0}
+.sidebar{
+  width:290px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;min-height:0;
+}
+.side-h{padding:12px 14px 8px;font-size:12px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;font-weight:700;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pl-list{overflow-y:auto;flex:1 1 auto;min-height:60px;padding:0 8px 8px}
+.pl-list.quick{flex:0 0 auto;min-height:0;overflow:visible}
+.pl-item{
+  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;margin-bottom:4px;
+  cursor:pointer;transition:.12s;border:1px solid transparent;
+}
+.pl-item:hover{background:var(--bg3)}
+.pl-item.active{background:linear-gradient(90deg,rgba(224,30,43,.22),transparent);border-color:var(--red)}
+.pl-item .ic{font-size:18px}
+.pl-item .nm{flex:1;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl-item .ct{font-size:11px;color:var(--dim2);background:var(--bg);padding:2px 7px;border-radius:20px}
+.pl-item .del{opacity:0;color:var(--dim2);font-size:15px;padding:2px 4px}
+.pl-item:hover .del{opacity:1}
+.pl-item .del:hover{color:var(--red2)}
+.copyright{flex-shrink:0;padding:11px 14px;font-size:11px;letter-spacing:.5px;color:var(--dim2);border-top:1px solid var(--line);text-align:center;background:var(--panel)}
+.copyright b{color:var(--red2);font-weight:700}
+.player-credit{text-align:center;font-size:10px;letter-spacing:.4px;color:var(--dim2);margin-top:-2px}
+.player-credit b{color:var(--red2);font-weight:700}
+
+.content{flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* Now playing hero */
+.hero{
+  padding:22px 24px;display:flex;gap:22px;align-items:center;
+  background:linear-gradient(180deg,rgba(224,30,43,.08),transparent);
+  border-bottom:1px solid var(--line);
+}
+.art{
+  width:150px;height:150px;flex-shrink:0;border-radius:16px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#2a1116,#14141a);box-shadow:var(--sh);
+  display:flex;align-items:center;justify-content:center;
+}
+.art img{width:100%;height:100%;object-fit:cover}
+.art .ph{font-size:56px;opacity:.5}
+.art .eq{position:absolute;bottom:0;left:0;right:0;height:38px;display:flex;align-items:flex-end;gap:3px;padding:0 10px 8px;opacity:0;transition:.3s}
+body.playing .art .eq{opacity:1}
+.art .eq i{flex:1;background:linear-gradient(var(--red2),var(--red));border-radius:2px 2px 0 0;height:20%;animation:bar .9s ease-in-out infinite}
+.art .eq i:nth-child(2){animation-delay:.15s}.art .eq i:nth-child(3){animation-delay:.3s}
+.art .eq i:nth-child(4){animation-delay:.45s}.art .eq i:nth-child(5){animation-delay:.6s}
+.art .eq i:nth-child(6){animation-delay:.25s}.art .eq i:nth-child(7){animation-delay:.5s}
+@keyframes bar{0%,100%{height:15%}50%{height:90%}}
+.np-info{min-width:0;flex:1}
+.np-kind{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red2);font-weight:800}
+.np-title{font-size:26px;font-weight:800;margin:4px 0 4px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.np-sub{color:var(--dim);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* YouTube frame */
+#ytwrap{position:absolute;width:1px;height:1px;overflow:hidden;opacity:.001;pointer-events:none;left:-9999px}
+#ytwrap.visible{position:static;width:100%;max-width:520px;height:290px;opacity:1;left:auto;pointer-events:auto;border-radius:12px;overflow:hidden;margin-top:8px}
+
+/* Track list */
+.tabs{display:flex;gap:6px;padding:12px 16px 0;flex-wrap:wrap}
+.tab{padding:8px 14px;border-radius:20px 20px 0 0;font-size:13px;font-weight:600;color:var(--dim);border:1px solid transparent;border-bottom:none}
+.tab.active{color:#fff;background:var(--bg3);border-color:var(--line)}
+.list-h{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--dim);font-size:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.list-h #plTitle{font-weight:700;color:var(--txt);font-size:14px}
+.list-h .cnt{margin-left:6px;color:var(--dim2);white-space:nowrap}
+.search-wrap{margin-left:auto;position:relative;display:flex;align-items:center}
+.search-wrap input{
+  background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:8px 30px 8px 14px;
+  color:var(--txt);font-size:13px;outline:none;width:200px;transition:.15s;
+}
+.search-wrap input:focus{border-color:var(--red);width:230px}
+.search-wrap #searchClr{position:absolute;right:8px;color:var(--dim2);font-size:14px;display:none}
+.search-wrap.has #searchClr{display:block}
+.search-wrap #searchClr:hover{color:var(--red2)}
+.trk .grip{cursor:grab;color:var(--dim2);font-size:16px;touch-action:none;padding:0 2px;display:none}
+.trk .grip:active{cursor:grabbing}
+body.reorder .trk .grip{display:inline-block}
+.trk.dragging{opacity:.5;background:var(--bg3)}
+.tracks{flex:1;overflow-y:auto;padding:6px 10px 20px}
+.trk{
+  display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;cursor:pointer;
+  transition:.1s;border:1px solid transparent;
+}
+.trk:hover{background:var(--bg3)}
+.trk.cur{background:linear-gradient(90deg,rgba(224,30,43,.2),transparent);border-color:var(--red)}
+.trk .num{width:26px;text-align:center;color:var(--dim2);font-size:13px;font-variant-numeric:tabular-nums}
+.trk.cur .num{color:var(--red2)}
+.trk .badge{font-size:15px;width:22px;text-align:center}
+.trk .meta{flex:1;min-width:0}
+.trk .t{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trk .s{font-size:12px;color:var(--dim2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trk .rm{opacity:0;color:var(--dim2);padding:4px 6px;font-size:15px}
+.trk:hover .rm{opacity:1}
+.trk .rm:hover{color:var(--red2)}
+.empty{text-align:center;color:var(--dim2);padding:50px 20px;font-size:14px;line-height:1.7}
+.empty .big{font-size:40px;display:block;margin-bottom:10px;opacity:.6}
+
+/* ---------- PLAYER BAR ---------- */
+.player{
+  background:linear-gradient(180deg,#161016,#0e0e11);border-top:1px solid var(--line);
+  padding:10px 16px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:8px;z-index:15;
+}
+.seek{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.bar{
+  flex:1;height:6px;background:#2a2a31;border-radius:20px;position:relative;cursor:pointer;
+}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--red),var(--red2));border-radius:20px;width:0%}
+.bar .knob{position:absolute;top:50%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:#fff;left:0%;box-shadow:0 0 8px var(--redglow);opacity:0;transition:opacity .15s}
+.bar:hover .knob{opacity:1}
+.pcontrols{display:flex;align-items:center;gap:8px}
+.pc-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.pc-mini{width:44px;height:44px;border-radius:9px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden}
+.pc-mini img{width:100%;height:100%;object-fit:cover}
+.pc-txt{min-width:0}
+.pc-txt .pt{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:34vw}
+.pc-txt .ps{font-size:12px;color:var(--dim2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:34vw}
+.pc-center{display:flex;align-items:center;gap:6px}
+.ctrl{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:transparent;transition:.15s;color:var(--txt)}
+.ctrl:hover{background:var(--bg3)}
+.ctrl.on{color:var(--red2)}
+.ctrl.play{width:54px;height:54px;background:linear-gradient(180deg,var(--red2),var(--red));font-size:22px;color:#fff;box-shadow:0 6px 20px var(--redglow)}
+.ctrl.play:hover{transform:scale(1.06)}
+.pc-right{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end}
+.vol{display:flex;align-items:center;gap:8px;width:130px}
+.vol input{width:100%;accent-color:var(--red2)}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.box{
+  background:var(--bg2);border:1px solid var(--line);border-radius:18px;width:100%;max-width:560px;
+  max-height:88vh;overflow-y:auto;box-shadow:var(--sh);
+}
+.box h3{margin:0;padding:18px 20px;border-bottom:1px solid var(--line);font-size:17px;display:flex;align-items:center;gap:9px}
+.box h3 .x{margin-left:auto;font-size:22px;color:var(--dim);cursor:pointer;line-height:1}
+.box-b{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.opt{
+  display:flex;gap:14px;align-items:flex-start;padding:15px;border:1px solid var(--line);border-radius:12px;
+  cursor:pointer;transition:.15s;background:var(--bg3)
+}
+.opt:hover{border-color:var(--red);transform:translateY(-2px)}
+.opt .oic{font-size:26px}
+.opt .ot{font-weight:700;font-size:15px;margin-bottom:3px}
+.opt .od{font-size:12.5px;color:var(--dim);line-height:1.5}
+.field label{font-size:12px;color:var(--dim);font-weight:600;display:block;margin-bottom:6px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;
+  color:var(--txt);font-size:14px;outline:none;
+}
+.field input:focus,.field textarea:focus{border-color:var(--red)}
+.field textarea{resize:vertical;min-height:70px}
+.hint{font-size:12px;color:var(--dim2);line-height:1.5}
+.radio-quick{display:flex;flex-wrap:wrap;gap:7px}
+.rq{background:var(--bg3);border:1px solid var(--line);border-radius:20px;padding:7px 12px;font-size:12.5px;font-weight:600}
+.rq:hover{border-color:var(--red);color:#fff}
+.divider{height:1px;background:var(--line);margin:2px 0}
+
+body.drag::after{
+  content:'📥 Άφησε τα τραγούδια / φακέλους εδώ';position:fixed;inset:14px;
+  border:3px dashed var(--red2);border-radius:22px;background:rgba(224,30,43,.14);
+  display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;
+  z-index:300;pointer-events:none;text-align:center;padding:20px;
+}
+.toast{
+  position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--bg3);border:1px solid var(--red);color:#fff;padding:12px 20px;border-radius:12px;
+  font-size:14px;font-weight:600;box-shadow:var(--sh);z-index:200;opacity:0;transition:.3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- MOBILE ---------- */
+.menu-btn{display:none}
+.overlay{display:none}
+@media(max-width:820px){
+  .menu-btn{display:inline-flex}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);transition:.25s;
+    width:270px;box-shadow:var(--sh);
+  }
+  .sidebar.open{transform:none}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:55}
+  .overlay.show{display:block}
+  .hero{flex-direction:column;text-align:center;padding:18px 16px;gap:14px}
+  .art{width:120px;height:120px}
+  .np-title{font-size:20px}
+  #ytwrap.visible{max-width:100%;height:210px}
+  .pc-txt .pt,.pc-txt .ps{max-width:40vw}
+  .vol{width:auto}
+  .vol input{width:70px}
+  .htools .lbl{display:none}
+  .logo{font-size:16px}
+  .search-wrap{order:3;width:100%;margin-left:0}
+  .search-wrap input,.search-wrap input:focus{width:100%}
+  .list-h .cnt{margin-left:auto}
+}
+@media(max-width:560px){
+  .pc-right .vol{display:none}
+  .pc-mini{display:none}
+  .ctrl{width:38px;height:38px;font-size:16px}
+  .ctrl.play{width:48px;height:48px}
+  .hero{display:none}
+  .tabs{padding-top:10px}
+  .list-h .lbl{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="btn sm menu-btn" id="menuBtn">☰</button>
+  <div class="logo"><span class="disc">💿</span> PLAYLIST <b>360°</b></div>
+  <div class="htools">
+    <button class="btn" id="fsBtn" title="Πλήρης οθόνη">⛶</button>
+    <button class="btn" id="addBtn">➕ <span class="lbl">Προσθήκη</span></button>
+    <button class="btn red" id="newPlBtn">🎵 <span class="lbl">Νέα Λίστα</span></button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="side-h">Οι λίστες μου <button class="btn sm" id="newPlBtn2">＋</button></div>
+    <div class="pl-list" id="plList"></div>
+    <div class="side-h" style="border-top:1px solid var(--line)">Γρήγορα</div>
+    <div class="pl-list quick">
+      <div class="pl-item" data-special="all"><span class="ic">🎼</span><span class="nm">Όλα τα τραγούδια</span></div>
+      <div class="pl-item" data-special="yt"><span class="ic">▶️</span><span class="nm">YouTube</span></div>
+      <div class="pl-item" data-special="radio"><span class="ic">📻</span><span class="nm">Ραδιόφωνο</span></div>
+    </div>
+    <div class="copyright">© by Chronis Makris</div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Content -->
+  <section class="content">
+    <div class="hero">
+      <div class="art" id="art">
+        <span class="ph">🎵</span>
+        <div class="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="np-info">
+        <div class="np-kind" id="npKind">Έτοιμο</div>
+        <div class="np-title" id="npTitle">Δεν παίζει τίποτα</div>
+        <div class="np-sub" id="npSub">Διάλεξε ή φτιάξε μια λίστα και πάτα play</div>
+        <div id="ytwrap"><div id="ytplayer"></div></div>
+      </div>
+    </div>
+
+    <div class="list-h">
+      <span id="plTitle">🎼 Όλα τα τραγούδια</span>
+      <div class="search-wrap"><input id="search" placeholder="🔍 Αναζήτηση…" autocomplete="off"><button id="searchClr" title="Καθαρισμός">✕</button></div>
+      <button class="btn sm" id="playAllBtn">▶ <span class="lbl">Όλα</span></button>
+      <button class="btn sm" id="shufAllBtn">🔀 <span class="lbl">Τυχαία</span></button>
+      <span class="cnt" id="trkCount">0 κομμάτια</span>
+    </div>
+    <div class="tracks" id="tracks"></div>
+  </section>
+</div>
+
+<!-- Player bar -->
+<div class="player">
+  <div class="seek">
+    <span id="curTime">0:00</span>
+    <div class="bar" id="seekBar"><div class="fill" id="seekFill"></div><div class="knob" id="seekKnob"></div></div>
+    <span id="durTime">0:00</span>
+  </div>
+  <div class="pcontrols">
+    <div class="pc-left">
+      <div class="pc-mini" id="pcMini">🎵</div>
+      <div class="pc-txt">
+        <div class="pt" id="pcTitle">—</div>
+        <div class="ps" id="pcSub">PLAYLIST 360°</div>
+      </div>
+    </div>
+    <div class="pc-center">
+      <button class="ctrl" id="shufBtn" title="Τυχαία">🔀</button>
+      <button class="ctrl" id="prevBtn" title="Προηγούμενο">⏮</button>
+      <button class="ctrl play" id="playBtn" title="Play/Pause">▶</button>
+      <button class="ctrl" id="nextBtn" title="Επόμενο">⏭</button>
+      <button class="ctrl" id="repBtn" title="Επανάληψη">🔁</button>
+    </div>
+    <div class="pc-right">
+      <div class="vol">
+        <span id="volIc">🔊</span>
+        <input type="range" id="vol" min="0" max="1" step="0.01" value="1">
+      </div>
+      <button class="ctrl" id="ytToggle" title="Εμφάνιση βίντεο">📺</button>
+    </div>
+  </div>
+  <div class="player-credit">© by <b>Chronis Makris</b></div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal" id="addModal">
+  <div class="box">
+    <h3>➕ Προσθήκη μουσικής <span class="x" data-close>×</span></h3>
+    <div class="box-b" id="addMain">
+      <div class="opt" data-add="files"><div class="oic">🎵</div><div><div class="ot">Τραγούδια από τη συσκευή</div><div class="od">Διάλεξε αρχεία ήχου (mp3, m4a, wav, flac…) από υπολογιστή, κινητό ή tablet. 🔒 Θυμούνται τη θέση τους.</div></div></div>
+      <div class="opt" data-add="folder"><div class="oic">📁</div><div><div class="ot">Ολόκληρος φάκελος</div><div class="od">Πρόσθεσε όλα τα τραγούδια ενός φακέλου με μία κίνηση. 🔒 Μόνιμη αποθήκευση (Chrome/Edge/Android). 💡 Ή σύρε φακέλους/αρχεία στο παράθυρο.</div></div></div>
+      <div class="opt" data-add="youtube"><div class="oic">▶️</div><div><div class="ot">YouTube — βίντεο ή λίστα</div><div class="od">Επικόλλησε σύνδεσμο ενός τραγουδιού ή ολόκληρης playlist του YouTube.</div></div></div>
+      <div class="opt" data-add="radio"><div class="oic">📻</div><div><div class="ot">Online ραδιόφωνο / stream</div><div class="od">Πρόσθεσε διαδικτυακό σταθμό (stream URL). Έτοιμοι σταθμοί + Jango.</div></div></div>
+    </div>
+
+    <!-- YouTube form -->
+    <div class="box-b" id="addYt" style="display:none">
+      <div class="field"><label>Σύνδεσμος YouTube (βίντεο ή playlist)</label>
+        <input id="ytUrl" placeholder="https://www.youtube.com/watch?v=…  ή  ...playlist?list=…"></div>
+      <div class="field"><label>Τίτλος (προαιρετικό)</label><input id="ytTitle" placeholder="π.χ. Αγαπημένα ροκ"></div>
+      <div class="hint">💡 Αν βάλεις σύνδεσμο <b>playlist</b>, θα προστεθεί σαν ένα κομμάτι που παίζει όλη τη λίστα με αυτόματη συνέχεια.</div>
+      <button class="btn red" id="ytAdd">Προσθήκη στη λίστα</button>
+      <div class="divider"></div>
+      <button class="btn sm" data-back>← Πίσω</button>
+    </div>
+
+    <!-- Radio form -->
+    <div class="box-b" id="addRadio" style="display:none">
+      <div class="field"><label>Όνομα σταθμού</label><input id="rdName" placeholder="π.χ. Best Radio"></div>
+      <div class="field"><label>Stream URL (.mp3 / .aac / .m3u8 / .pls)</label><input id="rdUrl" placeholder="http://…stream…"></div>
+      <button class="btn red" id="rdAdd">Προσθήκη σταθμού</button>
+      <div class="divider"></div>
+      <div class="hint">🎧 Γρήγοροι έτοιμοι σταθμοί:</div>
+      <div class="radio-quick" id="rdQuick"></div>
+      <div class="hint">Το <b>Jango</b> δεν δίνει απευθείας stream — άνοιξέ το online:
+        <a href="https://www.jango.com" target="_blank" style="color:var(--red2)">jango.com ↗</a></div>
+      <div class="divider"></div>
+      <button class="btn sm" data-back>← Πίσω</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PLAYLIST MODAL -->
+<div class="modal" id="plModal">
+  <div class="box" style="max-width:440px">
+    <h3>🎵 Νέα λίστα αναπαραγωγής <span class="x" data-close>×</span></h3>
+    <div class="box-b">
+      <div class="field"><label>Όνομα λίστας</label><input id="plName" placeholder="π.χ. Οδήγηση, Χαλάρωση, Party…"></div>
+      <div class="field"><label>Εικονίδιο</label>
+        <div class="radio-quick" id="iconPick"></div></div>
+      <button class="btn red" id="plCreate">Δημιουργία</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- hidden inputs -->
+<input type="file" id="fileInput" accept="audio/*" multiple style="display:none">
+<input type="file" id="folderInput" webkitdirectory directory multiple style="display:none">
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<script>
+/* ============ STORAGE ============ */
+const LS='playlist360_v1';
+let DB={playlists:[],tracks:[],order:0};
+let ytReady=false, ytPlayer=null, ytPendingId=null, ytPendingList=null;
+
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(LS));if(d){DB=d;DB.playlists=DB.playlists||[];DB.tracks=DB.tracks||[]}}catch(e){}
+  if(!DB.playlists.length){
+    DB.playlists=[{id:uid(),name:'Αγαπημένα',icon:'❤️',trackIds:[]}];
+  }
+}
+function save(){
+  // strip File objects (not serializable) before saving
+  const clean={...DB,tracks:DB.tracks.map(t=>{const c={...t};delete c._file;delete c._url;return c})};
+  try{localStorage.setItem(LS,JSON.stringify(clean))}catch(e){toast('⚠️ Δεν αποθηκεύτηκε (γεμάτος χώρος)')}
+}
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+
+/* ===== IndexedDB: μόνιμη αποθήκευση FileSystem handles ===== */
+let _idb;
+function idb(){
+  if(_idb)return _idb;
+  _idb=new Promise((res,rej)=>{
+    const r=indexedDB.open('pl360',1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('handles');
+    r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
+  });
+  return _idb;
+}
+async function idbPut(k,v){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('handles','readwrite');tx.objectStore('handles').put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('handles','readonly');const rq=tx.objectStore('handles').get(k);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error)})}
+async function idbDel(k){const db=await idb();return new Promise((res)=>{const tx=db.transaction('handles','readwrite');tx.objectStore('handles').delete(k);tx.oncomplete=res;tx.onerror=res})}
+
+const AUDIO_RE=/\.(mp3|m4a|aac|wav|flac|ogg|opus|wma|weba)$/i;
+async function resolveHandle(t){
+  if(t._file)return t._file;
+  if(!t.handleId)return null;
+  const h=await idbGet(t.handleId);
+  if(!h)return null;
+  try{
+    let perm=await h.queryPermission({mode:'read'});
+    if(perm!=='granted')perm=await h.requestPermission({mode:'read'});
+    if(perm!=='granted')return null;
+    t._file=await h.getFile();
+    return t._file;
+  }catch(e){return null}
+}
+
+/* ============ STATE ============ */
+let curView='all';          // 'all' | 'yt' | 'radio' | playlistId
+let queue=[];               // array of track ids currently playing through
+let qIndex=-1;
+let curTrack=null;
+let shuffle=false, repeat='off'; // off|one|all
+let isYT=false;
+
+/* ============ ELEMENTS ============ */
+const $=id=>document.getElementById(id);
+const audio=$('audio');
+
+/* ============ TOAST ============ */
+let toastT;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ============ RENDER SIDEBAR ============ */
+function renderSidebar(){
+  const el=$('plList');el.innerHTML='';
+  DB.playlists.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='pl-item'+(curView===p.id?' active':'');
+    d.innerHTML=`<span class="ic">${p.icon||'🎵'}</span><span class="nm">${esc(p.name)}</span>
+      <span class="ct">${p.trackIds.length}</span><span class="del">🗑</span>`;
+    d.querySelector('.nm').onclick=d.querySelector('.ic').onclick=d.querySelector('.ct').onclick=()=>setView(p.id);
+    d.onclick=e=>{if(!e.target.classList.contains('del'))setView(p.id)};
+    d.querySelector('.del').onclick=e=>{e.stopPropagation();if(confirm('Διαγραφή λίστας «'+p.name+'»;')){DB.playlists=DB.playlists.filter(x=>x.id!==p.id);if(curView===p.id)curView='all';save();renderSidebar();renderTracks()}};
+    el.appendChild(d);
+  });
+  document.querySelectorAll('[data-special]').forEach(s=>{
+    s.classList.toggle('active',curView===s.dataset.special);
+    s.onclick=()=>setView(s.dataset.special);
+  });
+}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ============ GET TRACKS FOR VIEW ============ */
+let searchQ='';
+function rawViewTracks(){
+  if(curView==='all')return DB.tracks;
+  if(curView==='yt')return DB.tracks.filter(t=>t.type==='youtube');
+  if(curView==='radio')return DB.tracks.filter(t=>t.type==='radio');
+  const p=DB.playlists.find(x=>x.id===curView);
+  if(!p)return [];
+  return p.trackIds.map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
+}
+function viewTracks(){
+  let l=rawViewTracks();
+  if(searchQ){const q=searchQ.toLowerCase();l=l.filter(t=>(t.title||'').toLowerCase().includes(q)||(t.sub||subFor(t)).toLowerCase().includes(q));}
+  return l;
+}
+function viewTitle(){
+  if(curView==='all')return '🎼 Όλα τα τραγούδια';
+  if(curView==='yt')return '▶️ YouTube';
+  if(curView==='radio')return '📻 Ραδιόφωνο';
+  const p=DB.playlists.find(x=>x.id===curView);return (p?.icon||'🎵')+' '+(p?.name||'');
+}
+function setView(v){curView=v;searchQ='';const s=$('search');if(s){s.value='';$('search').parentElement.classList.remove('has')}renderSidebar();renderTracks();closeSidebar()}
+
+/* ============ RENDER TRACKS ============ */
+function renderTracks(){
+  $('plTitle').textContent=viewTitle();
+  const list=viewTracks();
+  $('trkCount').textContent=list.length+' κομμάτια';
+  const el=$('tracks');el.innerHTML='';
+  if(!list.length){
+    el.innerHTML=`<div class="empty"><span class="big">🎵</span>
+      Δεν υπάρχουν κομμάτια εδώ.<br>Πάτα <b>➕ Προσθήκη</b> — ή <b>σύρε τραγούδια/φακέλους</b> πάνω στο παράθυρο.</div>`;
+    return;
+  }
+  const isPlaylist = !['all','yt','radio'].includes(curView);
+  const canReorder = isPlaylist && !searchQ;
+  document.body.classList.toggle('reorder',canReorder);
+  list.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='trk'+(curTrack&&curTrack.id===t.id?' cur':'');
+    d.dataset.tid=t.id;
+    const badge=t.type==='youtube'?'▶️':t.type==='radio'?'📻':t.type==='local'?(t._file||t.handleId?'🎵':'⚠️'):'🎵';
+    d.innerHTML=`<span class="grip" title="Σύρε για αλλαγή σειράς">⠿</span><span class="num">${i+1}</span><span class="badge">${badge}</span>
+      <div class="meta"><div class="t">${esc(t.title)}</div><div class="s">${esc(t.sub||subFor(t))}</div></div>
+      <span class="rm">✕</span>`;
+    d.onclick=e=>{if(e.target.classList.contains('rm')||e.target.classList.contains('grip'))return;playFromView(i)};
+    d.querySelector('.rm').onclick=e=>{
+      e.stopPropagation();
+      if(isPlaylist){const p=DB.playlists.find(x=>x.id===curView);p.trackIds=p.trackIds.filter(id=>id!==t.id);}
+      else{DB.tracks=DB.tracks.filter(x=>x.id!==t.id);DB.playlists.forEach(p=>p.trackIds=p.trackIds.filter(id=>id!==t.id));if(t.handleId)idbDel(t.handleId);}
+      save();renderTracks();renderSidebar();
+    };
+    if(canReorder)d.querySelector('.grip').addEventListener('pointerdown',e=>startReorder(e,t.id));
+    // context: add to playlist (long-press / right-click)
+    d.oncontextmenu=e=>{e.preventDefault();addToPlaylistPrompt(t)};
+    el.appendChild(d);
+  });
+}
+
+/* ===== Επαναδιάταξη με drag (mouse + touch) ===== */
+let dragId=null;
+function startReorder(e,id){
+  e.preventDefault();e.stopPropagation();
+  dragId=id;
+  const row=e.target.closest('.trk');if(row)row.classList.add('dragging');
+  window.addEventListener('pointermove',reorderMove);
+  window.addEventListener('pointerup',reorderUp,{once:true});
+}
+function reorderMove(e){
+  if(!dragId)return;
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const row=el&&el.closest&&el.closest('.trk');
+  if(!row||!row.dataset.tid||row.dataset.tid===dragId)return;
+  const p=curPlaylist();if(!p)return;
+  const from=p.trackIds.indexOf(dragId), to=p.trackIds.indexOf(row.dataset.tid);
+  if(from<0||to<0||from===to)return;
+  p.trackIds.splice(to,0,p.trackIds.splice(from,1)[0]);
+  renderTracks();
+}
+function reorderUp(){
+  dragId=null;
+  window.removeEventListener('pointermove',reorderMove);
+  document.querySelectorAll('.trk.dragging').forEach(r=>r.classList.remove('dragging'));
+  save();
+}
+function subFor(t){
+  if(t.type==='youtube')return t.isList?'YouTube λίστα':'YouTube';
+  if(t.type==='radio')return 'Online σταθμός';
+  if(t.type==='local'&&!t._file&&!t.handleId)return 'Ξαναφόρτωσε το αρχείο (τοπικό)';
+  return 'Τοπικό αρχείο';
+}
+function addToPlaylistPrompt(t){
+  if(!DB.playlists.length){toast('Φτιάξε πρώτα μια λίστα');return}
+  const names=DB.playlists.map((p,i)=>`${i+1}. ${p.name}`).join('\n');
+  const n=prompt('Πρόσθεσε «'+t.title+'» σε λίστα (γράψε αριθμό):\n'+names);
+  const idx=parseInt(n)-1;
+  if(idx>=0&&DB.playlists[idx]){
+    if(!DB.playlists[idx].trackIds.includes(t.id))DB.playlists[idx].trackIds.push(t.id);
+    save();renderSidebar();toast('✔ Προστέθηκε στη «'+DB.playlists[idx].name+'»');
+  }
+}
+
+/* ============ ADD TRACKS ============ */
+function inPlaylist(){return !['all','yt','radio'].includes(curView)}
+function curPlaylist(){return DB.playlists.find(x=>x.id===curView)}
+function pushTrack(t){
+  DB.tracks.push(t);
+  if(inPlaylist()){const p=curPlaylist();if(p)p.trackIds.push(t.id)}
+}
+function addFiles(files){
+  let n=0;
+  [...files].forEach(f=>{
+    if(!f.type.startsWith('audio/')&&!AUDIO_RE.test(f.name))return;
+    pushTrack({id:uid(),type:'local',title:cleanName(f.name),sub:'Τοπικό αρχείο',order:DB.order++,_file:f});
+    n++;
+  });
+  save();renderTracks();renderSidebar();
+  toast(n?('✔ Προστέθηκαν '+n+' τραγούδια'):'Δεν βρέθηκαν αρχεία ήχου');
+}
+function cleanName(n){return n.replace(/\.[^.]+$/,'').replace(/_/g,' ')}
+
+/* ===== Μόνιμη επιλογή αρχείων/φακέλου (File System Access API) ===== */
+const FS_FILES=!!window.showOpenFilePicker;
+const FS_DIR=!!window.showDirectoryPicker;
+async function pickFiles(){
+  if(!FS_FILES){$('fileInput').click();return}
+  let handles;
+  try{handles=await window.showOpenFilePicker({multiple:true,types:[{description:'Αρχεία ήχου',accept:{'audio/*':['.mp3','.m4a','.aac','.wav','.flac','.ogg','.opus','.wma']}}]});}
+  catch(e){return}
+  let n=0;
+  for(const h of handles){
+    const id=uid();try{await idbPut(id,h)}catch(e){}
+    pushTrack({id,type:'local',title:cleanName(h.name),sub:'Τοπικό αρχείο',order:DB.order++,handleId:id});
+    n++;
+  }
+  save();renderTracks();renderSidebar();toast('✔ Προστέθηκαν '+n+' τραγούδια 🔒');
+}
+async function* walkDir(dir){
+  for await (const entry of dir.values()){
+    if(entry.kind==='file'&&AUDIO_RE.test(entry.name))yield entry;
+    else if(entry.kind==='directory')yield* walkDir(entry);
+  }
+}
+async function pickFolder(){
+  if(!FS_DIR){$('folderInput').click();return}
+  let dir;
+  try{dir=await window.showDirectoryPicker();}catch(e){return}
+  toast('Σάρωση φακέλου…');
+  let n=0;
+  for await (const h of walkDir(dir)){
+    const id=uid();try{await idbPut(id,h)}catch(e){}
+    pushTrack({id,type:'local',title:cleanName(h.name),sub:'Τοπικό αρχείο',order:DB.order++,handleId:id});
+    n++;
+    if(n%25===0)renderTracks();
+  }
+  save();renderTracks();renderSidebar();
+  toast(n?('✔ Προστέθηκαν '+n+' τραγούδια 🔒 (μόνιμα)'):'Δεν βρέθηκαν αρχεία ήχου στον φάκελο');
+}
+
+function parseYT(url){
+  let vid=null,list=null;
+  try{
+    const u=new URL(url);
+    list=u.searchParams.get('list');
+    if(u.hostname.includes('youtu.be'))vid=u.pathname.slice(1);
+    else vid=u.searchParams.get('v');
+    if(!vid&&u.pathname.includes('/embed/'))vid=u.pathname.split('/embed/')[1];
+    if(!vid&&u.pathname.includes('/shorts/'))vid=u.pathname.split('/shorts/')[1];
+  }catch(e){
+    if(/^[\w-]{11}$/.test(url.trim()))vid=url.trim();
+  }
+  return {vid:vid&&vid.split('&')[0],list};
+}
+function addYouTube(){
+  const url=$('ytUrl').value.trim();
+  if(!url){toast('Βάλε σύνδεσμο');return}
+  const {vid,list}=parseYT(url);
+  if(!vid&&!list){toast('Μη έγκυρος σύνδεσμος YouTube');return}
+  const title=$('ytTitle').value.trim()|| (list&&!vid?'YouTube λίστα':'YouTube βίντεο');
+  const t={id:uid(),type:'youtube',title,sub:list&&!vid?'YouTube λίστα':'YouTube',order:DB.order++,
+           videoId:vid||null,listId:list||null,isList:!!(list&&!vid)};
+  DB.tracks.push(t);
+  if(!['all','yt','radio'].includes(curView)){const p=DB.playlists.find(x=>x.id===curView);if(p)p.trackIds.push(t.id)}
+  save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε από YouTube');
+}
+function addRadio(name,rawurl){
+  name=(name||$('rdName').value).trim();
+  let url=(rawurl||$('rdUrl').value).trim();
+  if(!name||!url){toast('Συμπλήρωσε όνομα και URL');return}
+  const t={id:uid(),type:'radio',title:name,sub:'Online σταθμός',order:DB.order++,url};
+  DB.tracks.push(t);
+  if(!['all','yt','radio'].includes(curView)){const p=DB.playlists.find(x=>x.id===curView);if(p)p.trackIds.push(t.id)}
+  save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε σταθμός: '+name);
+}
+
+const QUICK_RADIO=[
+  ['Best Radio 92.6','https://best926.live24.gr/best1069'],
+  ['Rythmos 94.9','https://rythmos.live24.gr/rythmos949'],
+  ['Sfera 102.2','https://sfera.live24.gr/sfera4132'],
+  ['Kiss 92.9','https://kissfm.live24.gr/kiss929thess'],
+  ['Dromos 89.8','https://dromos.live24.gr/dromos'],
+  ['SBS Chill','https://sonic.sbsdigital.com.au/9995chill'],
+  ['ClassicFM','https://media-ice.musicradio.com/ClassicFMMP3'],
+];
+
+/* ============ PLAYBACK ============ */
+function buildQueue(startIdx){
+  const list=viewTracks();
+  queue=list.map(t=>t.id);
+  if(shuffle){
+    const cur=list[startIdx].id;
+    for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]]}
+    queue=[cur,...queue.filter(id=>id!==cur)];
+    qIndex=0;
+  }else qIndex=startIdx;
+}
+function playFromView(idx){buildQueue(idx);playCurrent()}
+function playAll(shuf){const list=viewTracks();if(!list.length){toast('Άδεια λίστα');return}shuffle=shuf?true:shuffle;updateToggles();buildQueue(0);playCurrent()}
+
+function playCurrent(){
+  if(qIndex<0||qIndex>=queue.length)return;
+  const t=DB.tracks.find(x=>x.id===queue[qIndex]);
+  if(!t){next();return}
+  curTrack=t;
+  stopBoth();
+  if(t.type==='youtube'){playYT(t);}
+  else{playAudio(t);}
+  updateNowPlaying();
+  renderTracks();
+}
+function stopBoth(){
+  try{audio.pause()}catch(e){}
+  if(ytPlayer&&ytPlayer.stopVideo){try{ytPlayer.stopVideo()}catch(e){}}
+}
+async function playAudio(t){
+  isYT=false;ytWrapVisible(false);
+  let src;
+  if(t.type==='radio')src=t.url;
+  else{
+    let f=t._file;
+    if(!f&&t.handleId){f=await resolveHandle(t);}
+    if(t!==curTrack)return; // ο χρήστης άλλαξε κομμάτι όσο φορτώναμε
+    if(!f){toast('⚠️ Δεν βρέθηκε το αρχείο — ξαναπρόσθεσέ το');next();return;}
+    if(t._url)URL.revokeObjectURL(t._url);t._url=URL.createObjectURL(f);src=t._url;
+  }
+  audio.src=src;
+  audio.play().then(()=>setPlaying(true)).catch(e=>{toast('Δεν παίζει: '+(t.type==='radio'?'ο σταθμός':'το αρχείο'));});
+}
+function playYT(t){
+  isYT=true;
+  if(!ytReady){ytPendingId=t.videoId;ytPendingList=t.listId;toast('Φόρτωση YouTube…');return;}
+  ensureYT(()=>{
+    if(t.isList&&t.listId){ytPlayer.loadPlaylist({list:t.listId,listType:'playlist'});}
+    else if(t.listId&&t.videoId){ytPlayer.loadVideoById(t.videoId);}
+    else{ytPlayer.loadVideoById(t.videoId);}
+    setPlaying(true);
+  });
+}
+
+function setPlaying(p){
+  document.body.classList.toggle('playing',p);
+  $('playBtn').textContent=p?'⏸':'▶';
+}
+function togglePlay(){
+  if(!curTrack){const l=viewTracks();if(l.length)playFromView(0);return}
+  if(isYT){
+    if(!ytPlayer)return;
+    const st=ytPlayer.getPlayerState();
+    if(st===1){ytPlayer.pauseVideo();setPlaying(false)}else{ytPlayer.playVideo();setPlaying(true)}
+  }else{
+    if(audio.paused){audio.play();setPlaying(true)}else{audio.pause();setPlaying(false)}
+  }
+}
+function next(auto){
+  if(repeat==='one'&&auto){playCurrent();return}
+  if(qIndex<queue.length-1){qIndex++;playCurrent();}
+  else if(repeat==='all'){qIndex=0;playCurrent();}
+  else{setPlaying(false);}
+}
+function prev(){
+  if((audio.currentTime>3&&!isYT)){audio.currentTime=0;return}
+  if(qIndex>0){qIndex--;playCurrent();}else playCurrent();
+}
+
+/* ============ NOW PLAYING UI ============ */
+function updateNowPlaying(){
+  const t=curTrack;if(!t)return;
+  const kind=t.type==='youtube'?'YouTube':t.type==='radio'?'Live ραδιόφωνο':'Τοπικό αρχείο';
+  $('npKind').textContent=kind;
+  $('npTitle').textContent=t.title;
+  $('npSub').textContent=t.sub||subFor(t);
+  $('pcTitle').textContent=t.title;
+  $('pcSub').textContent=kind;
+  const art=$('art');const ph=art.querySelector('.ph');
+  const mini=$('pcMini');
+  // thumbnail for youtube
+  const old=art.querySelector('img');if(old)old.remove();
+  mini.innerHTML='';
+  if(t.type==='youtube'&&t.videoId){
+    const im=document.createElement('img');im.src='https://i.ytimg.com/vi/'+t.videoId+'/mqdefault.jpg';
+    im.onerror=()=>im.remove();art.insertBefore(im,ph);
+    const im2=im.cloneNode();mini.appendChild(im2);
+  }else{
+    mini.textContent=t.type==='radio'?'📻':'🎵';
+    ph.textContent=t.type==='radio'?'📻':'🎵';
+  }
+  if('mediaSession' in navigator){
+    navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:kind,album:'PLAYLIST 360°'});
+  }
+}
+function ytWrapVisible(v){$('ytwrap').classList.toggle('visible',v)}
+
+/* ============ SEEK/TIME ============ */
+function fmt(s){if(!s||isNaN(s)||s===Infinity)return '0:00';s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+audio.addEventListener('timeupdate',()=>{if(isYT)return;updateSeek(audio.currentTime,audio.duration)});
+audio.addEventListener('ended',()=>next(true));
+audio.addEventListener('play',()=>setPlaying(true));
+audio.addEventListener('pause',()=>{if(!isYT&&!audio.ended)setPlaying(false)});
+function updateSeek(cur,dur){
+  const pct=dur?Math.min(100,cur/dur*100):0;
+  $('seekFill').style.width=pct+'%';$('seekKnob').style.left=pct+'%';
+  $('curTime').textContent=fmt(cur);$('durTime').textContent=dur&&dur!==Infinity?fmt(dur):(isYT?'':'LIVE');
+  if(curTrack&&curTrack.type==='radio')$('durTime').textContent='LIVE';
+}
+$('seekBar').onclick=e=>{
+  const r=$('seekBar').getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;
+  if(isYT){if(ytPlayer&&ytPlayer.getDuration)ytPlayer.seekTo(ytPlayer.getDuration()*pct,true)}
+  else if(audio.duration&&audio.duration!==Infinity)audio.currentTime=audio.duration*pct;
+};
+
+/* YT time poll */
+setInterval(()=>{
+  if(isYT&&ytPlayer&&ytPlayer.getCurrentTime){
+    try{updateSeek(ytPlayer.getCurrentTime(),ytPlayer.getDuration())}catch(e){}
+  }
+},500);
+
+/* ============ YOUTUBE API ============ */
+function loadYTapi(){
+  if(window.YT&&window.YT.Player)return;
+  const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);
+}
+window.onYouTubeIframeAPIReady=function(){
+  ytReady=true;
+  ytPlayer=new YT.Player('ytplayer',{
+    height:'100%',width:'100%',
+    playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1},
+    events:{
+      onReady:()=>{ if(ytPendingId||ytPendingList){const t=curTrack;if(t){playYT(t);}ytPendingId=ytPendingList=null;} setVol(audio.volume);},
+      onStateChange:e=>{
+        if(e.data===YT.PlayerState.ENDED){ if(!(curTrack&&curTrack.isList)) next(true); }
+        if(e.data===YT.PlayerState.PLAYING)setPlaying(true);
+        if(e.data===YT.PlayerState.PAUSED)setPlaying(false);
+      }
+    }
+  });
+};
+function ensureYT(cb){if(ytReady&&ytPlayer&&ytPlayer.loadVideoById)cb();else{loadYTapi();ytPendingId='wait';setTimeout(()=>{if(ytReady)cb()},900)}}
+
+/* ============ CONTROLS WIRING ============ */
+$('playBtn').onclick=togglePlay;
+$('nextBtn').onclick=()=>next();
+$('prevBtn').onclick=prev;
+$('shufBtn').onclick=()=>{shuffle=!shuffle;updateToggles();toast(shuffle?'🔀 Τυχαία σειρά ON':'Τυχαία OFF')};
+$('repBtn').onclick=()=>{repeat=repeat==='off'?'all':repeat==='all'?'one':'off';updateToggles();toast(repeat==='all'?'🔁 Επανάληψη όλων':repeat==='one'?'🔂 Επανάληψη ενός':'Επανάληψη OFF')};
+function updateToggles(){
+  $('shufBtn').classList.toggle('on',shuffle);
+  const r=$('repBtn');r.classList.toggle('on',repeat!=='off');r.textContent=repeat==='one'?'🔂':'🔁';
+}
+$('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}ytWrapVisible(!$('ytwrap').classList.contains('visible'))};
+$('playAllBtn').onclick=()=>playAll(false);
+$('shufAllBtn').onclick=()=>playAll(true);
+
+/* volume */
+function setVol(v){audio.volume=v;if(ytPlayer&&ytPlayer.setVolume)try{ytPlayer.setVolume(v*100)}catch(e){}
+  $('volIc').textContent=v==0?'🔇':v<.5?'🔉':'🔊';}
+$('vol').oninput=e=>setVol(parseFloat(e.target.value));
+
+/* keyboard */
+document.addEventListener('keydown',e=>{
+  if(/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  if(e.code==='Space'){e.preventDefault();togglePlay()}
+  if(e.code==='ArrowRight'&&e.ctrlKey)next();
+  if(e.code==='ArrowLeft'&&e.ctrlKey)prev();
+});
+/* mediaSession buttons */
+if('mediaSession' in navigator){
+  navigator.mediaSession.setActionHandler('play',togglePlay);
+  navigator.mediaSession.setActionHandler('pause',togglePlay);
+  navigator.mediaSession.setActionHandler('nexttrack',()=>next());
+  navigator.mediaSession.setActionHandler('previoustrack',prev);
+}
+
+/* ============ MODALS ============ */
+function openModal(id){$(id).classList.add('show')}
+function closeModals(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));showAddPanel('main')}
+document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeModals);
+document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModals()});
+$('addBtn').onclick=()=>{showAddPanel('main');openModal('addModal')};
+function showAddPanel(p){
+  $('addMain').style.display=p==='main'?'flex':'none';
+  $('addYt').style.display=p==='youtube'?'flex':'none';
+  $('addRadio').style.display=p==='radio'?'flex':'none';
+}
+document.querySelectorAll('[data-add]').forEach(o=>o.onclick=()=>{
+  const a=o.dataset.add;
+  if(a==='files'){closeModals();pickFiles();}
+  else if(a==='folder'){closeModals();pickFolder();}
+  else showAddPanel(a);
+});
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showAddPanel('main'));
+$('ytAdd').onclick=addYouTube;
+$('rdAdd').onclick=()=>addRadio();
+$('fileInput').onchange=e=>{addFiles(e.target.files);e.target.value='';closeModals()};
+$('folderInput').onchange=e=>{addFiles(e.target.files);e.target.value='';closeModals()};
+
+/* ===== Drag & Drop (αρχεία ΚΑΙ φάκελοι) ===== */
+let dragDepth=0;
+window.addEventListener('dragenter',e=>{e.preventDefault();dragDepth++;document.body.classList.add('drag')});
+window.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy'});
+window.addEventListener('dragleave',e=>{e.preventDefault();if(--dragDepth<=0){dragDepth=0;document.body.classList.remove('drag')}});
+window.addEventListener('drop',async e=>{
+  e.preventDefault();dragDepth=0;document.body.classList.remove('drag');
+  const dt=e.dataTransfer;const files=[];
+  const items=dt.items?[...dt.items]:[];
+  const entries=items.map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  if(entries.length){for(const en of entries)await readEntry(en,files);}
+  else if(dt.files&&dt.files.length){files.push(...dt.files);}
+  if(files.length)addFiles(files);else toast('Δεν βρέθηκαν αρχεία ήχου');
+});
+function readEntry(entry,out){
+  return new Promise(resolve=>{
+    if(entry.isFile){entry.file(f=>{out.push(f);resolve()},()=>resolve());}
+    else if(entry.isDirectory){
+      const reader=entry.createReader();
+      const read=()=>reader.readEntries(async ents=>{
+        if(!ents.length){resolve();return}
+        for(const en of ents)await readEntry(en,out);
+        read();
+      },()=>resolve());
+      read();
+    }else resolve();
+  });
+}
+
+/* ===== Search ===== */
+$('search').addEventListener('input',e=>{
+  searchQ=e.target.value.trim();
+  e.target.parentElement.classList.toggle('has',!!searchQ);
+  renderTracks();
+});
+$('searchClr').onclick=()=>{const s=$('search');s.value='';searchQ='';s.parentElement.classList.remove('has');renderTracks();s.focus()};
+
+/* ===== Fullscreen ===== */
+function toggleFS(){
+  const el=document.documentElement;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+  const exit=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    if(req)req.call(el).catch(()=>toast('Στο iPhone: πρόσθεσε την εφαρμογή στην αρχική οθόνη για πλήρη οθόνη'));
+    else toast('Στο iPhone: πρόσθεσε την εφαρμογή στην αρχική οθόνη');
+  }else if(exit)exit.call(document);
+}
+$('fsBtn').onclick=toggleFS;
+document.addEventListener('fullscreenchange',()=>{$('fsBtn').textContent=document.fullscreenElement?'🗗':'⛶'});
+
+/* radio quick */
+function renderQuick(){
+  const el=$('rdQuick');el.innerHTML='';
+  QUICK_RADIO.forEach(([n,u])=>{
+    const b=document.createElement('button');b.className='rq';b.textContent='📻 '+n;
+    b.onclick=()=>addRadio(n,u);el.appendChild(b);
+  });
+}
+
+/* new playlist */
+const ICONS=['🎵','❤️','🔥','🎸','🎧','🎹','🥁','🎤','🌙','☀️','🚗','🏋️','🧘','🎉','💿','🎶'];
+let pickedIcon='🎵';
+function renderIconPick(){
+  const el=$('iconPick');el.innerHTML='';
+  ICONS.forEach(ic=>{
+    const b=document.createElement('button');b.className='rq';b.textContent=ic;b.style.fontSize='18px';
+    if(ic===pickedIcon)b.style.borderColor='var(--red)';
+    b.onclick=()=>{pickedIcon=ic;renderIconPick()};el.appendChild(b);
+  });
+}
+$('newPlBtn').onclick=$('newPlBtn2').onclick=()=>{$('plName').value='';pickedIcon='🎵';renderIconPick();openModal('plModal');setTimeout(()=>$('plName').focus(),100)};
+$('plCreate').onclick=()=>{
+  const n=$('plName').value.trim();if(!n){toast('Βάλε όνομα');return}
+  const p={id:uid(),name:n,icon:pickedIcon,trackIds:[]};DB.playlists.push(p);save();
+  curView=p.id;renderSidebar();renderTracks();closeModals();toast('✔ Δημιουργήθηκε η «'+n+'»');
+};
+$('plName').addEventListener('keydown',e=>{if(e.key==='Enter')$('plCreate').click()});
+
+/* ============ MOBILE SIDEBAR ============ */
+$('menuBtn').onclick=()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')};
+$('overlay').onclick=closeSidebar;
+function closeSidebar(){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
+
+/* ============ PWA ============ */
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+
+/* ============ INIT ============ */
+load();renderSidebar();renderTracks();renderQuick();renderIconPick();updateToggles();setVol(1);
+loadYTapi();
+</script>
+</body>
+</html>

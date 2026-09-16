@@ -1,0 +1,20 @@
+{
+  "name": "PLAYLIST 360°",
+  "short_name": "Playlist 360",
+  "description": "Media player & playlists — τοπικά τραγούδια, φάκελοι, YouTube και online ραδιόφωνο.",
+  "lang": "el",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0d0d0f",
+  "theme_color": "#0d0d0f",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
