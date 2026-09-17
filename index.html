@@ -370,6 +370,9 @@ body.drag::after{
       <div class="hint">💡 Αν βάλεις σύνδεσμο <b>playlist</b>, θα προστεθεί σαν ένα κομμάτι που παίζει όλη τη λίστα με αυτόματη συνέχεια.</div>
       <button class="btn red" id="ytAdd">Προσθήκη στη λίστα</button>
       <div class="divider"></div>
+      <div class="hint">🎬 Προτεινόμενες λίστες ανά είδος:</div>
+      <div class="radio-quick" id="ytQuick"></div>
+      <div class="divider"></div>
       <button class="btn sm" data-back>← Πίσω</button>
     </div>
 
@@ -679,6 +682,21 @@ function addYouTube(){
   DB.tracks.push(t);
   if(!['all','yt','radio'].includes(curView)){const p=DB.playlists.find(x=>x.id===curView);if(p)p.trackIds.push(t.id)}
   save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε από YouTube');
+}
+const YT_QUICK=[
+  ['🎸 Ροκ Ξένο (Top 100)','PLaqeTZoS9LMr-23-qhzjZItKOvCX9RSiq'],
+  ['🤘 Μέταλ (Greatest Hits)','PLGBuKfnErZlCNW2j20hdXDpr_gtdkZ3kO'],
+  ['🎸 Ροκ Ελληνικό (121 Καλύτερα)','PLIRst8LS-NbGmfkEBiiNfYitTItGNGkcx'],
+  ['🎷 Τζαζ (Best of Smooth)','PLFydZ0DfQmdk_yf7Y3Bm4lG9XyAVdEA7t'],
+  ['🎺 Μπλουζ (Top 100)','PLFjmckBbDlzSE47xD0FivigDOARiLJl61'],
+  ['🤠 Country (Classics)','PLpM27g8AYf2tTwn6Z1UdYZxV8CsJ5BXNr'],
+  ['🇬🇷 Λαϊκά (Non Stop Mix)','PLtyeiUkThSofisJfc5205ry-aSoZzG3vC'],
+  ['🎻 Έντεχνο Ελληνικό','PLG0W5bDKZ1GU3C73m5qWIhOM66NZaHTni'],
+  ['🪗 Ρεμπέτικα (200 τραγούδια)','PLzhUH3AElIOwXH-HMz09HT65W6syRLpD_'],
+];
+function addYTList(title,listId){
+  pushTrack({id:uid(),type:'youtube',title,sub:'YouTube λίστα',order:DB.order++,videoId:null,listId,isList:true});
+  save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε: '+title);
 }
 function addRadio(name,rawurl){
   name=(name||$('rdName').value).trim();
@@ -1012,6 +1030,14 @@ function renderQuick(){
     b.onclick=()=>addRadio(n,u);el.appendChild(b);
   });
 }
+/* youtube quick (προτεινόμενες λίστες ανά είδος) */
+function renderYTQuick(){
+  const el=$('ytQuick');if(!el)return;el.innerHTML='';
+  YT_QUICK.forEach(([n,id])=>{
+    const b=document.createElement('button');b.className='rq';b.textContent='▶️ '+n;
+    b.onclick=()=>addYTList(n,id);el.appendChild(b);
+  });
+}
 
 /* new playlist */
 const ICONS=['🎵','❤️','🔥','🎸','🎧','🎹','🥁','🎤','🌙','☀️','🚗','🏋️','🧘','🎉','💿','🎶'];
@@ -1043,7 +1069,7 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 }
 
 /* ============ INIT ============ */
-load();renderSidebar();renderTracks();renderQuick();renderIconPick();updateToggles();setVol(1);
+load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(1);
 restoreResume();
 loadYTapi();
 </script>
