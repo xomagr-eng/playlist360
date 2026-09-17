@@ -465,6 +465,7 @@ let qIndex=-1;
 let curTrack=null;
 let shuffle=false, repeat='off'; // off|one|all
 let isYT=false;
+let pendingSeek=0, needsResumeLoad=false, _lastResume=0; // «Συνέχεια»
 
 /* ============ ELEMENTS ============ */
 const $=id=>document.getElementById(id);
@@ -701,6 +702,7 @@ const QUICK_RADIO=[
 
 /* ============ PLAYBACK ============ */
 function buildQueue(startIdx){
+  needsResumeLoad=false;pendingSeek=0;
   const list=viewTracks();
   queue=list.map(t=>t.id);
   if(shuffle){
@@ -739,6 +741,7 @@ async function playAudio(t){
     if(!f){toast('⚠️ Δεν βρέθηκε το αρχείο — ξαναπρόσθεσέ το');next();return;}
     if(t._url)URL.revokeObjectURL(t._url);t._url=URL.createObjectURL(f);src=t._url;
   }
+  if(pendingSeek>0&&t.type!=='radio'){const ps=pendingSeek;pendingSeek=0;audio.addEventListener('loadedmetadata',()=>{try{audio.currentTime=ps}catch(e){}},{once:true});}
   audio.src=src;
   audio.play().then(()=>setPlaying(true)).catch(e=>{toast('Δεν παίζει: '+(t.type==='radio'?'ο σταθμός':'το αρχείο'));});
 }
@@ -758,6 +761,7 @@ function setPlaying(p){
   $('playBtn').textContent=p?'⏸':'▶';
 }
 function togglePlay(){
+  if(needsResumeLoad&&curTrack){needsResumeLoad=false;playCurrent();return;}
   if(!curTrack){const l=viewTracks();if(l.length)playFromView(0);return}
   if(isYT){
     if(!ytPlayer)return;
@@ -768,12 +772,14 @@ function togglePlay(){
   }
 }
 function next(auto){
+  needsResumeLoad=false;pendingSeek=0;
   if(repeat==='one'&&auto){playCurrent();return}
   if(qIndex<queue.length-1){qIndex++;playCurrent();}
   else if(repeat==='all'){qIndex=0;playCurrent();}
   else{setPlaying(false);}
 }
 function prev(){
+  needsResumeLoad=false;pendingSeek=0;
   if((audio.currentTime>3&&!isYT)){audio.currentTime=0;return}
   if(qIndex>0){qIndex--;playCurrent();}else playCurrent();
 }
@@ -808,10 +814,41 @@ function ytWrapVisible(v){$('ytwrap').classList.toggle('visible',v)}
 
 /* ============ SEEK/TIME ============ */
 function fmt(s){if(!s||isNaN(s)||s===Infinity)return '0:00';s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
-audio.addEventListener('timeupdate',()=>{if(isYT)return;updateSeek(audio.currentTime,audio.duration)});
+audio.addEventListener('timeupdate',()=>{if(isYT)return;updateSeek(audio.currentTime,audio.duration);saveResume();});
 audio.addEventListener('ended',()=>next(true));
 audio.addEventListener('play',()=>setPlaying(true));
-audio.addEventListener('pause',()=>{if(!isYT&&!audio.ended)setPlaying(false)});
+audio.addEventListener('pause',()=>{if(!isYT&&!audio.ended){setPlaying(false);saveResume(true);}});
+
+/* ===== «Συνέχεια»: αποθήκευση/επαναφορά σημείου ===== */
+function saveResume(force){
+  if(!curTrack)return;
+  const now=Date.now();
+  if(!force && now-_lastResume<4000)return;
+  _lastResume=now;
+  let pos=0;
+  if(isYT){try{if(ytPlayer&&ytPlayer.getCurrentTime)pos=ytPlayer.getCurrentTime()||0}catch(e){}}
+  else pos=audio.currentTime||0;
+  if(curTrack.type==='radio')pos=0;
+  DB.resume={trackId:curTrack.id,pos,queue:queue.slice(),qIndex,shuffle,repeat};
+  save();
+}
+function restoreResume(){
+  const r=DB.resume;if(!r)return;
+  const t=DB.tracks.find(x=>x.id===r.trackId);if(!t)return;
+  curTrack=t;
+  queue=(Array.isArray(r.queue)&&r.queue.length)?r.queue.slice():[t.id];
+  qIndex=(typeof r.qIndex==='number'&&queue[r.qIndex]===t.id)?r.qIndex:queue.indexOf(t.id);
+  if(qIndex<0){queue=[t.id];qIndex=0;}
+  if(typeof r.shuffle==='boolean')shuffle=r.shuffle;
+  if(r.repeat)repeat=r.repeat;
+  pendingSeek=(t.type!=='radio'&&r.pos>1)?r.pos:0;
+  needsResumeLoad=true;
+  updateNowPlaying();updateToggles();
+  if(pendingSeek>0){$('curTime').textContent=fmt(pendingSeek);$('pcSub').textContent='⏸ Συνέχεια από '+fmt(pendingSeek);}
+  else $('pcSub').textContent='⏸ Πάτα ▶ για συνέχεια';
+}
+window.addEventListener('pagehide',()=>saveResume(true));
+window.addEventListener('beforeunload',()=>saveResume(true));
 function updateSeek(cur,dur){
   const pct=dur?Math.min(100,cur/dur*100):0;
   $('seekFill').style.width=pct+'%';$('seekKnob').style.left=pct+'%';
@@ -827,7 +864,7 @@ $('seekBar').onclick=e=>{
 /* YT time poll */
 setInterval(()=>{
   if(isYT&&ytPlayer&&ytPlayer.getCurrentTime){
-    try{updateSeek(ytPlayer.getCurrentTime(),ytPlayer.getDuration())}catch(e){}
+    try{updateSeek(ytPlayer.getCurrentTime(),ytPlayer.getDuration());saveResume();}catch(e){}
   }
 },500);
 
@@ -845,8 +882,8 @@ window.onYouTubeIframeAPIReady=function(){
       onReady:()=>{ if(ytPendingId||ytPendingList){const t=curTrack;if(t){playYT(t);}ytPendingId=ytPendingList=null;} setVol(audio.volume);},
       onStateChange:e=>{
         if(e.data===YT.PlayerState.ENDED){ if(!(curTrack&&curTrack.isList)) next(true); }
-        if(e.data===YT.PlayerState.PLAYING)setPlaying(true);
-        if(e.data===YT.PlayerState.PAUSED)setPlaying(false);
+        if(e.data===YT.PlayerState.PLAYING){setPlaying(true); if(pendingSeek>0){const ps=pendingSeek;pendingSeek=0;setTimeout(()=>{try{ytPlayer.seekTo(ps,true)}catch(e){}},250);}}
+        if(e.data===YT.PlayerState.PAUSED){setPlaying(false);saveResume(true);}
       }
     }
   });
@@ -1000,6 +1037,7 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 
 /* ============ INIT ============ */
 load();renderSidebar();renderTracks();renderQuick();renderIconPick();updateToggles();setVol(1);
+restoreResume();
 loadYTapi();
 </script>
 </body>
