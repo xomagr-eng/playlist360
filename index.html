@@ -407,7 +407,7 @@ body.drag::after{
 <!-- hidden inputs -->
 <input type="file" id="fileInput" accept="audio/*" multiple style="display:none">
 <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none">
-<audio id="audio" crossorigin="anonymous"></audio>
+<audio id="audio">
 
 <script>
 /* ============ STORAGE ============ */
@@ -691,13 +691,18 @@ function addRadio(name,rawurl){
 }
 
 const QUICK_RADIO=[
-  ['Best Radio 92.6','https://best926.live24.gr/best1069'],
-  ['Rythmos 94.9','https://rythmos.live24.gr/rythmos949'],
-  ['Sfera 102.2','https://sfera.live24.gr/sfera4132'],
-  ['Kiss 92.9','https://kissfm.live24.gr/kiss929thess'],
-  ['Dromos 89.8','https://dromos.live24.gr/dromos'],
-  ['SBS Chill','https://sonic.sbsdigital.com.au/9995chill'],
-  ['ClassicFM','https://media-ice.musicradio.com/ClassicFMMP3'],
+  ['🎸 Ροκ Ξένο (SomaFM 70s)','https://ice.somafm.com/seventies-128-mp3'],
+  ['🤘 Μέταλ Ξένο (SomaFM)','https://ice.somafm.com/metal-128-mp3'],
+  ['🎸 Ροκ Ελληνικό (En Lefko 87.7)','https://n07.radiojar.com/enlefko877'],
+  ['🎷 Τζαζ (TSF Jazz)','https://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3'],
+  ['🎼 Τζαζ (SomaFM Sonic)','https://ice.somafm.com/sonicuniverse-128-mp3'],
+  ['🎺 Μπλουζ (1.FM Blues)','https://strm112.1.fm/blues_mobile_mp3'],
+  ['🤠 Country (1.FM)','https://strm112.1.fm/country_mobile_mp3'],
+  ['🪕 Country (SomaFM Boot Liquor)','https://ice.somafm.com/bootliquor-128-mp3'],
+  ['🇬🇷 Λαϊκά Ελληνικά (ΕΡΤ Δεύτερο)','https://radiostreaming.ert.gr/ert-deftero'],
+  ['🇬🇷 Ελληνικά Hits (Sfera)','https://sfera.live24.gr/sfera4132'],
+  ['🌍 Κόσμος (ΕΡΤ Kosmos)','https://radiostreaming.ert.gr/ert-kosmos'],
+  ['🎻 Κλασική (Classic FM)','https://media-ice.musicradio.com/ClassicFMMP3'],
 ];
 
 /* ============ PLAYBACK ============ */
