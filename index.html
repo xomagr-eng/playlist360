@@ -58,6 +58,9 @@ body.playing .logo .disc{animation-play-state:running}
 .btn:hover{border-color:var(--red);color:#fff;transform:translateY(-1px)}
 .btn.red{background:linear-gradient(180deg,var(--red2),var(--red));border-color:var(--red2);color:#fff;box-shadow:0 6px 18px var(--redglow)}
 .btn.sm{padding:7px 10px;font-size:12px}
+.btn.on{border-color:var(--red);color:#fff;background:rgba(224,30,43,.22)}
+#sleepBtn{position:relative}
+.sleep-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:9px;min-width:15px;text-align:center;line-height:1.3}
 
 /* ---------- LAYOUT ---------- */
 .main{flex:1;display:flex;min-height:0}
@@ -111,6 +114,9 @@ body.playing .art .eq{opacity:1}
 .np-kind{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red2);font-weight:800}
 .np-title{font-size:26px;font-weight:800;margin:4px 0 4px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .np-sub{color:var(--dim);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trkvol{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--dim);max-width:320px}
+.trkvol input{flex:1;accent-color:var(--red2)}
+.trkvol span:last-child{font-variant-numeric:tabular-nums;min-width:36px;text-align:right}
 
 /* YouTube frame */
 .video-stage{
@@ -320,6 +326,7 @@ body.drag::after{
   <button class="btn sm menu-btn" id="menuBtn">☰</button>
   <div class="logo"><span class="disc">💿</span> PLAYLIST <b>360°</b></div>
   <div class="htools">
+    <button class="btn" id="sleepBtn" title="Sleep timer">⏰<span id="sleepBadge" class="sleep-badge" hidden></span></button>
     <button class="btn" id="fsBtn" title="Πλήρης οθόνη">⛶</button>
     <button class="btn" id="addBtn">➕ <span class="lbl">Προσθήκη</span></button>
     <button class="btn red" id="newPlBtn">🎵 <span class="lbl">Νέα Λίστα</span></button>
@@ -353,6 +360,7 @@ body.drag::after{
         <div class="np-kind" id="npKind">Έτοιμο</div>
         <div class="np-title" id="npTitle">Δεν παίζει τίποτα</div>
         <div class="np-sub" id="npSub">Διάλεξε ή φτιάξε μια λίστα και πάτα play</div>
+        <div class="trkvol"><span>🔊 Ένταση κομματιού</span><input type="range" id="trkVol" min="0" max="1" step="0.05" value="1"><span id="trkVolVal">100%</span></div>
       </div>
     </div>
 
@@ -428,7 +436,7 @@ body.drag::after{
         <input id="ytUrl" placeholder="https://www.youtube.com/watch?v=…  ή  ...playlist?list=…"></div>
       <div class="field"><label>Τίτλος (προαιρετικό)</label><input id="ytTitle" placeholder="π.χ. Αγαπημένα ροκ"></div>
       <div class="hint">💡 Αν βάλεις σύνδεσμο <b>playlist</b>, θα προστεθεί σαν ένα κομμάτι που παίζει όλη τη λίστα με αυτόματη συνέχεια.</div>
-      <div class="hint">🔉 <b>Ήχος στο παρασκήνιο:</b> στο Android, όταν φεύγεις από τον browser ενώ παίζει YouTube, το βίντεο συνεχίζει σε αιωρούμενο παράθυρο (Picture-in-Picture) με ήχο. Πλήρες background audio χωρίς PiP χρειάζεται YouTube Premium.</div>
+      <div class="hint">🔉 <b>Ήχος στο παρασκήνιο (YouTube):</b> σε υπολογιστή πάτα 🪟 για αιωρούμενο παράθυρο. Στο κινητό, το YouTube σταματά όταν φεύγεις (περιορισμός YouTube) — χρησιμοποίησε το εικονίδιο PiP μέσα στον player ή YouTube Premium. Τα <b>τοπικά τραγούδια & το ραδιόφωνο</b> συνεχίζουν κανονικά στο παρασκήνιο.</div>
       <button class="btn red" id="ytAdd">Προσθήκη στη λίστα</button>
       <div class="divider"></div>
       <div class="hint">🎬 Προτεινόμενες λίστες ανά είδος:</div>
@@ -467,6 +475,19 @@ body.drag::after{
       <div class="field"><label>Εικονίδιο</label>
         <div class="radio-quick" id="iconPick"></div></div>
       <button class="btn red" id="plCreate">Δημιουργία</button>
+    </div>
+  </div>
+</div>
+
+<!-- SLEEP TIMER MODAL -->
+<div class="modal" id="sleepModal">
+  <div class="box" style="max-width:380px">
+    <h3>⏰ Sleep timer <span class="x" data-close>×</span></h3>
+    <div class="box-b">
+      <div class="hint">Σταμάτημα αναπαραγωγής μετά από:</div>
+      <div class="radio-quick" id="sleepOpts"></div>
+      <div class="divider"></div>
+      <button class="btn" id="sleepCancel">✖ Ακύρωση χρονοδιακόπτη</button>
     </div>
   </div>
 </div>
@@ -889,6 +910,7 @@ function togglePlay(){
 }
 function next(auto){
   needsResumeLoad=false;pendingSeek=0;
+  if(auto&&stopAfterTrack){clearSleep();setPlaying(false);toast('⏰ Σταμάτησε (τέλος κομματιού)');return;}
   if(repeat==='one'&&auto){playCurrent();return}
   if(qIndex<queue.length-1){qIndex++;playCurrent();}
   else if(repeat==='all'){qIndex=0;playCurrent();}
@@ -909,6 +931,8 @@ function updateNowPlaying(){
   $('npSub').textContent=t.sub||subFor(t);
   $('pcTitle').textContent=t.title;
   $('pcSub').textContent=kind;
+  const g=(typeof t.gain==='number')?t.gain:1;
+  $('trkVol').value=g;$('trkVolVal').textContent=Math.round(g*100)+'%';applyVolume();
   const art=$('art');const ph=art.querySelector('.ph');
   const mini=$('pcMini');
   // thumbnail for youtube
@@ -1024,7 +1048,7 @@ $('videoClose').onclick=()=>showVideo(false);
 async function enterPiP(){
   if(!isYT){toast('Το PiP είναι για βίντεο YouTube');return;}
   if(!('documentPictureInPicture' in window)){
-    toast('Κουμπί PiP: Chrome/Edge σε υπολογιστή. Στο Android το PiP ανοίγει αυτόματα όταν φεύγεις από τον browser.');return;
+    toast('Το κουμπί PiP δουλεύει σε Chrome/Edge (υπολογιστής). Στο κινητό, χρησιμοποίησε το εικονίδιο PiP μέσα στον player του YouTube.');return;
   }
   if(documentPictureInPicture.window){documentPictureInPicture.window.close();return;}
   try{
@@ -1056,10 +1080,38 @@ $('videoFull').onclick=()=>{
 $('playAllBtn').onclick=()=>playAll(false);
 $('shufAllBtn').onclick=()=>playAll(true);
 
-/* volume */
-function setVol(v){audio.volume=v;if(ytPlayer&&ytPlayer.setVolume)try{ytPlayer.setVolume(v*100)}catch(e){}
-  $('volIc').textContent=v==0?'🔇':v<.5?'🔉':'🔊';}
+/* volume (master + ένταση ανά κομμάτι) */
+let masterVol=1, _volT;
+function applyVolume(){
+  const g=(curTrack&&typeof curTrack.gain==='number')?curTrack.gain:1;
+  const eff=Math.max(0,Math.min(1,masterVol*g));
+  audio.volume=eff;
+  if(ytPlayer&&ytPlayer.setVolume)try{ytPlayer.setVolume(Math.round(eff*100))}catch(e){}
+  $('volIc').textContent=masterVol==0?'🔇':masterVol<.5?'🔉':'🔊';
+}
+function setVol(v){masterVol=v;$('vol').value=v;DB.vol=v;clearTimeout(_volT);_volT=setTimeout(save,500);applyVolume();}
 $('vol').oninput=e=>setVol(parseFloat(e.target.value));
+function setTrackGain(g){ if(!curTrack)return; curTrack.gain=g; $('trkVolVal').textContent=Math.round(g*100)+'%'; clearTimeout(_volT);_volT=setTimeout(save,500); applyVolume(); }
+$('trkVol').oninput=e=>setTrackGain(parseFloat(e.target.value));
+
+/* ===== Sleep timer ===== */
+let sleepTimer=null, sleepEnd=0, stopAfterTrack=false, sleepTick=null;
+const SLEEP_OPTS=[['15 λεπτά',15],['30 λεπτά',30],['45 λεπτά',45],['1 ώρα',60],['1½ ώρα',90],['2 ώρες',120],['Τέλος κομματιού','track']];
+function renderSleepOpts(){const el=$('sleepOpts');el.innerHTML='';SLEEP_OPTS.forEach(([n,v])=>{const b=document.createElement('button');b.className='rq';b.textContent='⏰ '+n;b.onclick=()=>setSleep(v);el.appendChild(b);});}
+function pauseAll(){ if(isYT){if(ytPlayer&&ytPlayer.pauseVideo)try{ytPlayer.pauseVideo()}catch(e){}} else audio.pause(); setPlaying(false); }
+function clearSleep(){ if(sleepTimer)clearTimeout(sleepTimer); if(sleepTick)clearInterval(sleepTick); sleepTimer=sleepTick=null; sleepEnd=0; stopAfterTrack=false; $('sleepBadge').hidden=true; $('sleepBtn').classList.remove('on'); }
+function updateSleepBadge(){ if(!sleepEnd)return; const left=Math.max(0,Math.ceil((sleepEnd-Date.now())/60000)); const b=$('sleepBadge'); b.hidden=false; b.textContent=left+'′'; if(left<=0){clearInterval(sleepTick);sleepTick=null;} }
+function setSleep(v){
+  clearSleep(); closeModals();
+  $('sleepBtn').classList.add('on');
+  if(v==='track'){ stopAfterTrack=true; $('sleepBadge').hidden=false; $('sleepBadge').textContent='♪'; toast('⏰ Θα σταματήσει στο τέλος του κομματιού'); return; }
+  sleepEnd=Date.now()+v*60000;
+  sleepTimer=setTimeout(()=>{ pauseAll(); clearSleep(); toast('⏰ Ώρα για ύπνο — η μουσική σταμάτησε'); }, v*60000);
+  updateSleepBadge(); sleepTick=setInterval(updateSleepBadge,15000);
+  toast('⏰ Θα σταματήσει σε '+(v>=60?(v/60)+' ώρα'+(v>=120?'ς':''):v+' λεπτά'));
+}
+$('sleepBtn').onclick=()=>{renderSleepOpts();openModal('sleepModal');};
+$('sleepCancel').onclick=()=>{ if(!sleepTimer&&!stopAfterTrack){toast('Δεν υπάρχει ενεργός χρονοδιακόπτης');} else toast('Χρονοδιακόπτης ακυρώθηκε'); clearSleep(); closeModals(); };
 
 /* keyboard */
 document.addEventListener('keydown',e=>{
@@ -1208,7 +1260,7 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 }
 
 /* ============ INIT ============ */
-load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(1);
+load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(typeof DB.vol==='number'?DB.vol:1);
 restoreResume();
 loadYTapi();
 </script>
