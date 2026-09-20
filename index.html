@@ -253,6 +253,16 @@ body.reorder .trk .grip{display:inline-block}
 .hint{font-size:12px;color:var(--dim2);line-height:1.5}
 .radio-quick{display:flex;flex-wrap:wrap;gap:7px}
 .rq{background:var(--bg3);border:1px solid var(--line);border-radius:20px;padding:7px 12px;font-size:12.5px;font-weight:600}
+.rd-results{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.rd-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg3);cursor:pointer;transition:.12s}
+.rd-row:hover{border-color:var(--red);transform:translateX(2px)}
+.rd-row .rd-fav{width:34px;height:34px;border-radius:8px;flex-shrink:0;object-fit:cover;background:#000}
+.rd-row .rd-favph{width:34px;height:34px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a1116,#14141a);font-size:16px}
+.rd-row .rd-meta{flex:1;min-width:0}
+.rd-row .rd-nm{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rd-row .rd-sub{font-size:11px;color:var(--dim2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rd-row .rd-add{color:var(--red2);font-size:18px;font-weight:800;flex-shrink:0}
+.rd-note{font-size:12px;color:var(--dim2);padding:6px 2px;text-align:center}
 .rq:hover{border-color:var(--red);color:#fff}
 .divider{height:1px;background:var(--line);margin:2px 0}
 
@@ -324,6 +334,7 @@ body.drag::after{
     <div class="side-h" style="border-top:1px solid var(--line)">Γρήγορα</div>
     <div class="pl-list quick">
       <div class="pl-item" data-special="all"><span class="ic">🎼</span><span class="nm">Όλα τα τραγούδια</span></div>
+      <div class="pl-item" data-special="local"><span class="ic">🎵</span><span class="nm">Jukebox</span></div>
       <div class="pl-item" data-special="yt"><span class="ic">▶️</span><span class="nm">YouTube</span></div>
       <div class="pl-item" data-special="radio"><span class="ic">📻</span><span class="nm">Ραδιόφωνο</span></div>
     </div>
@@ -403,7 +414,7 @@ body.drag::after{
   <div class="box">
     <h3>➕ Προσθήκη μουσικής <span class="x" data-close>×</span></h3>
     <div class="box-b" id="addMain">
-      <div class="opt" data-add="files"><div class="oic">🎵</div><div><div class="ot">Τραγούδια από τη συσκευή</div><div class="od">Διάλεξε αρχεία ήχου (mp3, m4a, wav, flac…) από υπολογιστή, κινητό ή tablet. 🔒 Θυμούνται τη θέση τους.</div></div></div>
+      <div class="opt" data-add="files"><div class="oic">🎵</div><div><div class="ot">Jukebox — Τραγούδια από τη συσκευή</div><div class="od">Διάλεξε αρχεία ήχου (mp3, m4a, wav, flac…) από υπολογιστή, κινητό ή tablet. 🔒 Θυμούνται τη θέση τους.</div></div></div>
       <div class="opt" data-add="folder"><div class="oic">📁</div><div><div class="ot">Ολόκληρος φάκελος</div><div class="od">Πρόσθεσε όλα τα τραγούδια ενός φακέλου με μία κίνηση. 🔒 Μόνιμη αποθήκευση (Chrome/Edge/Android). 💡 Ή σύρε φακέλους/αρχεία στο παράθυρο.</div></div></div>
       <div class="opt" data-add="youtube"><div class="oic">▶️</div><div><div class="ot">YouTube — βίντεο ή λίστα</div><div class="od">Επικόλλησε σύνδεσμο ενός τραγουδιού ή ολόκληρης playlist του YouTube.</div></div></div>
       <div class="opt" data-add="radio"><div class="oic">📻</div><div><div class="ot">Online ραδιόφωνο / stream</div><div class="od">Πρόσθεσε διαδικτυακό σταθμό (stream URL). Έτοιμοι σταθμοί + Jango.</div></div></div>
@@ -425,6 +436,11 @@ body.drag::after{
 
     <!-- Radio form -->
     <div class="box-b" id="addRadio" style="display:none">
+      <div class="field"><label>🔍 Αναζήτηση σταθμού (όνομα ή συχνότητα)</label>
+        <input id="rdSearch" placeholder="π.χ. Sfera, 92.6, jazz, rock…" autocomplete="off"></div>
+      <div id="rdResults" class="rd-results"></div>
+      <div class="divider"></div>
+      <div class="hint">Ή πρόσθεσε χειροκίνητα:</div>
       <div class="field"><label>Όνομα σταθμού</label><input id="rdName" placeholder="π.χ. Best Radio"></div>
       <div class="field"><label>Stream URL (.mp3 / .aac / .m3u8 / .pls)</label><input id="rdUrl" placeholder="http://…stream…"></div>
       <button class="btn red" id="rdAdd">Προσθήκη σταθμού</button>
@@ -551,6 +567,7 @@ function rawViewTracks(){
   if(curView==='all')return DB.tracks;
   if(curView==='yt')return DB.tracks.filter(t=>t.type==='youtube');
   if(curView==='radio')return DB.tracks.filter(t=>t.type==='radio');
+  if(curView==='local')return DB.tracks.filter(t=>t.type==='local');
   const p=DB.playlists.find(x=>x.id===curView);
   if(!p)return [];
   return p.trackIds.map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
@@ -564,6 +581,7 @@ function viewTitle(){
   if(curView==='all')return '🎼 Όλα τα τραγούδια';
   if(curView==='yt')return '▶️ YouTube';
   if(curView==='radio')return '📻 Ραδιόφωνο';
+  if(curView==='local')return '🎵 Jukebox';
   const p=DB.playlists.find(x=>x.id===curView);return (p?.icon||'🎵')+' '+(p?.name||'');
 }
 function setView(v){curView=v;searchQ='';const s=$('search');if(s){s.value='';$('search').parentElement.classList.remove('has')}renderSidebar();renderTracks();closeSidebar()}
@@ -579,7 +597,7 @@ function renderTracks(){
       Δεν υπάρχουν κομμάτια εδώ.<br>Πάτα <b>➕ Προσθήκη</b> — ή <b>σύρε τραγούδια/φακέλους</b> πάνω στο παράθυρο.</div>`;
     return;
   }
-  const isPlaylist = !['all','yt','radio'].includes(curView);
+  const isPlaylist = !['all','yt','radio','local'].includes(curView);
   const canReorder = isPlaylist && !searchQ;
   document.body.classList.toggle('reorder',canReorder);
   list.forEach((t,i)=>{
@@ -648,7 +666,7 @@ function addToPlaylistPrompt(t){
 }
 
 /* ============ ADD TRACKS ============ */
-function inPlaylist(){return !['all','yt','radio'].includes(curView)}
+function inPlaylist(){return !['all','yt','radio','local'].includes(curView)}
 function curPlaylist(){return DB.playlists.find(x=>x.id===curView)}
 function pushTrack(t){
   DB.tracks.push(t);
@@ -724,10 +742,8 @@ function addYouTube(){
   const {vid,list}=parseYT(url);
   if(!vid&&!list){toast('Μη έγκυρος σύνδεσμος YouTube');return}
   const title=$('ytTitle').value.trim()|| (list&&!vid?'YouTube λίστα':'YouTube βίντεο');
-  const t={id:uid(),type:'youtube',title,sub:list&&!vid?'YouTube λίστα':'YouTube',order:DB.order++,
-           videoId:vid||null,listId:list||null,isList:!!(list&&!vid)};
-  DB.tracks.push(t);
-  if(!['all','yt','radio'].includes(curView)){const p=DB.playlists.find(x=>x.id===curView);if(p)p.trackIds.push(t.id)}
+  pushTrack({id:uid(),type:'youtube',title,sub:list&&!vid?'YouTube λίστα':'YouTube',order:DB.order++,
+           videoId:vid||null,listId:list||null,isList:!!(list&&!vid)});
   save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε από YouTube');
 }
 const YT_QUICK=[
@@ -745,14 +761,38 @@ function addYTList(title,listId){
   pushTrack({id:uid(),type:'youtube',title,sub:'YouTube λίστα',order:DB.order++,videoId:null,listId,isList:true});
   save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε: '+title);
 }
-function addRadio(name,rawurl){
+function addRadio(name,rawurl,keepOpen){
   name=(name||$('rdName').value).trim();
   let url=(rawurl||$('rdUrl').value).trim();
   if(!name||!url){toast('Συμπλήρωσε όνομα και URL');return}
-  const t={id:uid(),type:'radio',title:name,sub:'Online σταθμός',order:DB.order++,url};
-  DB.tracks.push(t);
-  if(!['all','yt','radio'].includes(curView)){const p=DB.playlists.find(x=>x.id===curView);if(p)p.trackIds.push(t.id)}
-  save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε σταθμός: '+name);
+  pushTrack({id:uid(),type:'radio',title:name,sub:'Online σταθμός',order:DB.order++,url});
+  save();if(!keepOpen)closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε σταθμός: '+name);
+}
+/* ===== Αναζήτηση σταθμών (radio-browser API) ===== */
+let _rdT;
+function rdSearch(q){
+  const box=$('rdResults');if(!box)return;
+  q=(q||'').trim();
+  if(q.length<2){box.innerHTML='';return;}
+  box.innerHTML='<div class="rd-note">Αναζήτηση…</div>';
+  const url='https://de1.api.radio-browser.info/json/stations/search?name='+encodeURIComponent(q)+'&hidebroken=true&order=votes&reverse=true&limit=40';
+  fetch(url).then(r=>r.json()).then(list=>{
+    const seen=new Set();const rows=[];
+    list.forEach(s=>{const u=s.url_resolved||s.url;if(!u||seen.has(u))return;seen.add(u);rows.push(s);});
+    rows.sort((a,b)=>((b.url_resolved||b.url).startsWith('https')?1:0)-((a.url_resolved||a.url).startsWith('https')?1:0));
+    if(!rows.length){box.innerHTML='<div class="rd-note">Δεν βρέθηκαν σταθμοί.</div>';return;}
+    box.innerHTML='';
+    rows.slice(0,30).forEach(s=>{
+      const u=s.url_resolved||s.url;const https=u.startsWith('https');
+      const sub=[s.country,(s.bitrate?s.bitrate+'kbps':''),(https?'':'⚠️ http')].filter(Boolean).join(' · ');
+      const row=document.createElement('div');row.className='rd-row';
+      row.innerHTML=`<span class="rd-favph">📻</span><div class="rd-meta"><div class="rd-nm"></div><div class="rd-sub"></div></div><span class="rd-add">＋</span>`;
+      row.querySelector('.rd-nm').textContent=(s.name||'').trim();
+      row.querySelector('.rd-sub').textContent=sub;
+      row.onclick=()=>addRadio((s.name||'').trim(),u,true);
+      box.appendChild(row);
+    });
+  }).catch(()=>{box.innerHTML='<div class="rd-note">Αποτυχία σύνδεσης (χρειάζεται internet).</div>';});
 }
 
 const QUICK_RADIO=[
@@ -831,6 +871,7 @@ function playYT(t){
 function setPlaying(p){
   document.body.classList.toggle('playing',p);
   $('playBtn').textContent=p?'⏸':'▶';
+  if('mediaSession' in navigator){try{navigator.mediaSession.playbackState=p?'playing':'paused'}catch(e){}}
 }
 function togglePlay(){
   if(needsResumeLoad&&curTrack){needsResumeLoad=false;playCurrent();return;}
@@ -926,6 +967,9 @@ function updateSeek(cur,dur){
   $('seekFill').style.width=pct+'%';$('seekKnob').style.left=pct+'%';
   $('curTime').textContent=fmt(cur);$('durTime').textContent=dur&&dur!==Infinity?fmt(dur):(isYT?'':'LIVE');
   if(curTrack&&curTrack.type==='radio')$('durTime').textContent='LIVE';
+  if('mediaSession' in navigator && navigator.mediaSession.setPositionState){
+    try{ if(dur&&dur!==Infinity&&cur<=dur) navigator.mediaSession.setPositionState({duration:dur,position:cur}); }catch(e){}
+  }
 }
 $('seekBar').onclick=e=>{
   const r=$('seekBar').getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;
@@ -1002,12 +1046,16 @@ document.addEventListener('keydown',e=>{
   if(e.code==='ArrowRight'&&e.ctrlKey)next();
   if(e.code==='ArrowLeft'&&e.ctrlKey)prev();
 });
-/* mediaSession buttons */
+/* mediaSession buttons (χειριστήρια στο κλείδωμα + συνέχεια στο παρασκήνιο) */
 if('mediaSession' in navigator){
-  navigator.mediaSession.setActionHandler('play',togglePlay);
-  navigator.mediaSession.setActionHandler('pause',togglePlay);
-  navigator.mediaSession.setActionHandler('nexttrack',()=>next());
-  navigator.mediaSession.setActionHandler('previoustrack',prev);
+  const safe=(a,fn)=>{try{navigator.mediaSession.setActionHandler(a,fn)}catch(e){}};
+  safe('play',()=>{if(needsResumeLoad||audio.paused||!isYT)togglePlay();else{if(ytPlayer)ytPlayer.playVideo();setPlaying(true);}});
+  safe('pause',togglePlay);
+  safe('nexttrack',()=>next());
+  safe('previoustrack',prev);
+  safe('seekforward',e=>{const s=(e&&e.seekOffset)||10; if(isYT){if(ytPlayer)ytPlayer.seekTo(ytPlayer.getCurrentTime()+s,true)}else audio.currentTime=Math.min((audio.duration||1e9),audio.currentTime+s);});
+  safe('seekbackward',e=>{const s=(e&&e.seekOffset)||10; if(isYT){if(ytPlayer)ytPlayer.seekTo(Math.max(0,ytPlayer.getCurrentTime()-s),true)}else audio.currentTime=Math.max(0,audio.currentTime-s);});
+  safe('seekto',e=>{if(e&&e.seekTime!=null){if(isYT){if(ytPlayer)ytPlayer.seekTo(e.seekTime,true)}else audio.currentTime=e.seekTime;}});
 }
 
 /* ============ MODALS ============ */
@@ -1030,6 +1078,7 @@ document.querySelectorAll('[data-add]').forEach(o=>o.onclick=()=>{
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showAddPanel('main'));
 $('ytAdd').onclick=addYouTube;
 $('rdAdd').onclick=()=>addRadio();
+$('rdSearch').addEventListener('input',e=>{clearTimeout(_rdT);const q=e.target.value;_rdT=setTimeout(()=>rdSearch(q),350);});
 $('fileInput').onchange=e=>{addFiles(e.target.files);e.target.value='';closeModals()};
 $('folderInput').onchange=e=>{addFiles(e.target.files);e.target.value='';closeModals()};
 
