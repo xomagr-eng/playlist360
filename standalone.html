@@ -136,6 +136,25 @@ body.playing .art .eq{opacity:1}
   max-width:none;width:min(100vw,177.7vh);height:min(56.25vw,100vh);aspect-ratio:16/9;border-radius:0;box-shadow:none;
 }
 .video-stage:fullscreen .video-ctrls,.video-stage:-webkit-full-screen .video-ctrls{top:16px;right:20px}
+/* Theater mode: σκοτεινιάζει το περιβάλλον, μεγάλο βίντεο στο κέντρο */
+body.theater{overflow:hidden}
+body.theater .video-stage{
+  position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(0,0,0,.93);border:0;animation:fade .2s ease;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+body.theater .video-stage #ytwrap{max-width:min(1400px,94vw);width:100%;box-shadow:0 30px 90px rgba(0,0,0,.85),0 0 90px var(--redglow)}
+body.theater .video-ctrls{top:20px;right:26px}
+#videoTheater.on{background:var(--red);border-color:var(--red2)}
+/* YouTube κάρτες ειδών με μικρογραφίες */
+.ytg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:9px}
+.ytg-card{background:var(--bg3);border:1px solid var(--line);border-radius:11px;overflow:hidden;text-align:left;padding:0;transition:.15s}
+.ytg-card:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.ytg-card .thumb{position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#2a1116,#14141a);display:block}
+.ytg-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ytg-card .thumb.noimg::after{content:'▶️';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;opacity:.6}
+.ytg-card .plbadge{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.75);color:#fff;font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:5px}
+.ytg-card .cap{display:block;padding:7px 9px;font-size:12px;font-weight:600;color:var(--txt);line-height:1.25}
 
 /* Track list */
 .tabs{display:flex;gap:6px;padding:12px 16px 0;flex-wrap:wrap}
@@ -328,6 +347,7 @@ body.drag::after{
 
     <div id="videoStage" class="video-stage" hidden>
       <div class="video-ctrls">
+        <button id="videoTheater" title="Theater mode (σκοτεινό περιβάλλον)">🎬</button>
         <button id="videoFull" title="Πλήρης οθόνη βίντεο">⛶</button>
         <button id="videoClose" title="Κλείσιμο βίντεο">✕</button>
       </div>
@@ -711,15 +731,15 @@ function addYouTube(){
   save();closeModals();renderTracks();renderSidebar();toast('✔ Προστέθηκε από YouTube');
 }
 const YT_QUICK=[
-  ['🎸 Ροκ Ξένο (Top 100)','PLaqeTZoS9LMr-23-qhzjZItKOvCX9RSiq'],
-  ['🤘 Μέταλ (Greatest Hits)','PLGBuKfnErZlCNW2j20hdXDpr_gtdkZ3kO'],
-  ['🎸 Ροκ Ελληνικό (121 Καλύτερα)','PLIRst8LS-NbGmfkEBiiNfYitTItGNGkcx'],
-  ['🎷 Τζαζ (Best of Smooth)','PLFydZ0DfQmdk_yf7Y3Bm4lG9XyAVdEA7t'],
-  ['🎺 Μπλουζ (Top 100)','PLFjmckBbDlzSE47xD0FivigDOARiLJl61'],
-  ['🤠 Country (Classics)','PLpM27g8AYf2tTwn6Z1UdYZxV8CsJ5BXNr'],
-  ['🇬🇷 Λαϊκά (Non Stop Mix)','PLtyeiUkThSofisJfc5205ry-aSoZzG3vC'],
-  ['🎻 Έντεχνο Ελληνικό','PLG0W5bDKZ1GU3C73m5qWIhOM66NZaHTni'],
-  ['🪗 Ρεμπέτικα (200 τραγούδια)','PLzhUH3AElIOwXH-HMz09HT65W6syRLpD_'],
+  ['🎸 Ροκ Ξένο (Top 100)','PLaqeTZoS9LMr-23-qhzjZItKOvCX9RSiq','c4XeOKU-S_Y'],
+  ['🤘 Μέταλ (Greatest Hits)','PLGBuKfnErZlCNW2j20hdXDpr_gtdkZ3kO','kXYiU_JCYtU'],
+  ['🎸 Ροκ Ελληνικό (121 Καλύτερα)','PLIRst8LS-NbGmfkEBiiNfYitTItGNGkcx','X3je3XKTKzQ'],
+  ['🎷 Τζαζ (Best of Smooth)','PLFydZ0DfQmdk_yf7Y3Bm4lG9XyAVdEA7t','m91aMLYfkAE'],
+  ['🎺 Μπλουζ (Top 100)','PLFjmckBbDlzSE47xD0FivigDOARiLJl61','ioOzsi9aHQQ'],
+  ['🤠 Country (Classics)','PLpM27g8AYf2tTwn6Z1UdYZxV8CsJ5BXNr','MZtkRCsm6H8'],
+  ['🇬🇷 Λαϊκά (Non Stop Mix)','PLtyeiUkThSofisJfc5205ry-aSoZzG3vC','5-VYEc5FL0c'],
+  ['🎻 Έντεχνο Ελληνικό','PLG0W5bDKZ1GU3C73m5qWIhOM66NZaHTni','vX6N1-YqSwU'],
+  ['🪗 Ρεμπέτικα (200 τραγούδια)','PLzhUH3AElIOwXH-HMz09HT65W6syRLpD_','-6c8KxHO0Lk'],
 ];
 function addYTList(title,listId){
   pushTrack({id:uid(),type:'youtube',title,sub:'YouTube λίστα',order:DB.order++,videoId:null,listId,isList:true});
@@ -862,7 +882,7 @@ function updateNowPlaying(){
     navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:kind,album:'PLAYLIST 360°'});
   }
 }
-function showVideo(v){const s=$('videoStage');if(s)s.hidden=!v;}
+function showVideo(v){const s=$('videoStage');if(s)s.hidden=!v; if(!v)document.body.classList.remove('theater');}
 
 /* ============ SEEK/TIME ============ */
 function fmt(s){if(!s||isNaN(s)||s===Infinity)return '0:00';s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
@@ -954,6 +974,10 @@ function updateToggles(){
 }
 $('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}showVideo($('videoStage').hidden)};
 $('videoClose').onclick=()=>showVideo(false);
+function setTheater(v){document.body.classList.toggle('theater',v);$('videoTheater').classList.toggle('on',v);}
+$('videoTheater').onclick=()=>setTheater(!document.body.classList.contains('theater'));
+$('videoStage').addEventListener('click',e=>{if(e.target.id==='videoStage'&&document.body.classList.contains('theater'))setTheater(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('theater'))setTheater(false);});
 $('videoFull').onclick=()=>{
   const el=$('videoStage');
   const fs=document.fullscreenElement||document.webkitFullscreenElement;
@@ -1069,9 +1093,10 @@ function renderQuick(){
 }
 /* youtube quick (προτεινόμενες λίστες ανά είδος) */
 function renderYTQuick(){
-  const el=$('ytQuick');if(!el)return;el.innerHTML='';
-  YT_QUICK.forEach(([n,id])=>{
-    const b=document.createElement('button');b.className='rq';b.textContent='▶️ '+n;
+  const el=$('ytQuick');if(!el)return;el.className='ytg-grid';el.innerHTML='';
+  YT_QUICK.forEach(([n,id,thumb])=>{
+    const b=document.createElement('button');b.className='ytg-card';
+    b.innerHTML=`<span class="thumb"><img loading="lazy" src="https://i.ytimg.com/vi/${thumb}/mqdefault.jpg" onerror="this.style.display='none';this.parentElement.classList.add('noimg')"><span class="plbadge">▶ λίστα</span></span><span class="cap">${esc(n)}</span>`;
     b.onclick=()=>addYTList(n,id);el.appendChild(b);
   });
 }
