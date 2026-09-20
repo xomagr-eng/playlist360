@@ -426,6 +426,7 @@ body.drag::after{
         <input id="ytUrl" placeholder="https://www.youtube.com/watch?v=…  ή  ...playlist?list=…"></div>
       <div class="field"><label>Τίτλος (προαιρετικό)</label><input id="ytTitle" placeholder="π.χ. Αγαπημένα ροκ"></div>
       <div class="hint">💡 Αν βάλεις σύνδεσμο <b>playlist</b>, θα προστεθεί σαν ένα κομμάτι που παίζει όλη τη λίστα με αυτόματη συνέχεια.</div>
+      <div class="hint">🔉 <b>Ήχος στο παρασκήνιο:</b> στο Android, όταν φεύγεις από τον browser ενώ παίζει YouTube, το βίντεο συνεχίζει σε αιωρούμενο παράθυρο (Picture-in-Picture) με ήχο. Πλήρες background audio χωρίς PiP χρειάζεται YouTube Premium.</div>
       <button class="btn red" id="ytAdd">Προσθήκη στη λίστα</button>
       <div class="divider"></div>
       <div class="hint">🎬 Προτεινόμενες λίστες ανά είδος:</div>
@@ -995,7 +996,7 @@ window.onYouTubeIframeAPIReady=function(){
     height:'100%',width:'100%',
     playerVars:{autoplay:1,playsinline:1,rel:0,modestbranding:1},
     events:{
-      onReady:()=>{ if(ytPendingId||ytPendingList){const t=curTrack;if(t){playYT(t);}ytPendingId=ytPendingList=null;} setVol(audio.volume);},
+      onReady:()=>{ try{ytPlayer.getIframe().setAttribute('allow','autoplay; encrypted-media; picture-in-picture; fullscreen');}catch(e){} if(ytPendingId||ytPendingList){const t=curTrack;if(t){playYT(t);}ytPendingId=ytPendingList=null;} setVol(audio.volume);},
       onStateChange:e=>{
         if(e.data===YT.PlayerState.ENDED){ if(!(curTrack&&curTrack.isList)) next(true); }
         if(e.data===YT.PlayerState.PLAYING){setPlaying(true); if(pendingSeek>0){const ps=pendingSeek;pendingSeek=0;setTimeout(()=>{try{ytPlayer.seekTo(ps,true)}catch(e){}},250);}}
@@ -1045,6 +1046,12 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Space'){e.preventDefault();togglePlay()}
   if(e.code==='ArrowRight'&&e.ctrlKey)next();
   if(e.code==='ArrowLeft'&&e.ctrlKey)prev();
+});
+/* Επιστροφή στην εφαρμογή: συνέχισε το YouTube αν είχε σταματήσει στο παρασκήνιο */
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && isYT && ytPlayer && document.body.classList.contains('playing')){
+    try{ if(ytPlayer.getPlayerState()===2) ytPlayer.playVideo(); }catch(e){}
+  }
 });
 /* mediaSession buttons (χειριστήρια στο κλείδωμα + συνέχεια στο παρασκήνιο) */
 if('mediaSession' in navigator){
