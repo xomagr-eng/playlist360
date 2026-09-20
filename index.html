@@ -61,6 +61,14 @@ body.playing .logo .disc{animation-play-state:running}
 .btn.on{border-color:var(--red);color:#fff;background:rgba(224,30,43,.22)}
 #sleepBtn{position:relative}
 .sleep-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:9px;min-width:15px;text-align:center;line-height:1.3}
+.alarm-ringing{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:200;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;
+  background:linear-gradient(180deg,var(--red2),var(--red));box-shadow:0 10px 30px var(--redglow),0 0 0 1px rgba(255,255,255,.1);
+  animation:alpulse 1.1s ease-in-out infinite}
+.alarm-ringing .ar-txt{font-weight:800;font-size:15px;color:#fff}
+.alarm-ringing .btn{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.25);color:#fff}
+.alarm-ringing .btn.red{background:#000;border-color:#000}
+@keyframes alpulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.04)}}
 .alchk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);cursor:pointer}
 .alchk input{accent-color:var(--red2);width:16px;height:16px}
 #alDays .rq.sel{background:var(--red);border-color:var(--red2);color:#fff}
@@ -512,12 +520,22 @@ body.drag::after{
           <option value="radio|order">📻 Ραδιόφωνο (πρώτος σταθμός)</option>
           <option value="yt|order">▶️ YouTube (πρώτο)</option>
         </select></div>
+      <div class="field"><label>Ένταση-στόχος: <span id="alVolVal">80%</span></label>
+        <input type="range" id="alVol" min="0.1" max="1" step="0.05" value="0.8"></div>
+      <div class="field"><label>Σνουζ (αναβολή)</label>
+        <select id="alSnooze"><option value="5">5 λεπτά</option><option value="9" selected>9 λεπτά</option><option value="10">10 λεπτά</option><option value="15">15 λεπτά</option></select></div>
       <label class="alchk"><input type="checkbox" id="alFade" checked> Σταδιακό δυνάμωμα έντασης (fade-in)</label>
       <button class="btn red" id="alSet">Ορισμός ξυπνητηριού</button>
       <button class="btn" id="alClear">✖ Απενεργοποίηση</button>
       <div class="hint">⚠️ Χτυπά μόνο όσο η εφαρμογή είναι ανοιχτή (έστω σε άλλη καρτέλα/παρασκήνιο). Κράτησέ την ανοιχτή ή εγκατέστησέ την σαν εφαρμογή.</div>
     </div>
   </div>
+</div>
+
+<div id="alarmRinging" class="alarm-ringing" hidden>
+  <span class="ar-txt">🔔 Ξυπνητήρι!</span>
+  <button class="btn" id="arSnooze">😴 Σνουζ</button>
+  <button class="btn red" id="arStop">✖ Διακοπή</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1158,9 +1176,13 @@ function openAlarm(){
   _alSelDays=Array.isArray(a.days)?a.days.slice():[];
   $('alTarget').value=a.target||'all|shuffle';
   $('alFade').checked=a.fade!==false;
+  const vol=(typeof a.vol==='number')?a.vol:0.8;
+  $('alVol').value=vol; $('alVolVal').textContent=Math.round(vol*100)+'%';
+  $('alSnooze').value=String(a.snooze||9);
   renderAlarmDays();
   openModal('alarmModal');
 }
+$('alVol').oninput=e=>{$('alVolVal').textContent=Math.round(parseFloat(e.target.value)*100)+'%';};
 function updateAlarmBadge(){
   const a=DB.alarm; const b=$('alarmBadge');
   if(a&&a.enabled){ $('alarmBtn').classList.add('on'); b.hidden=false; b.textContent=a.time; }
@@ -1168,23 +1190,33 @@ function updateAlarmBadge(){
 }
 function setAlarm(){
   const time=$('alTime').value; if(!time){toast('Βάλε ώρα');return;}
-  DB.alarm={enabled:true,time,days:_alSelDays.slice(),target:$('alTarget').value,fade:$('alFade').checked};
+  DB.alarm={enabled:true,time,days:_alSelDays.slice(),target:$('alTarget').value,fade:$('alFade').checked,vol:parseFloat($('alVol').value),snooze:parseInt($('alSnooze').value)};
   save(); updateAlarmBadge(); closeModals();
   if('Notification' in window && Notification.permission==='default'){try{Notification.requestPermission()}catch(e){}}
   const dtxt=_alSelDays.length?('τις μέρες: '+_alSelDays.map(d=>AL_DAYS.find(x=>x[1]===d)[0]).join(',')):'μία φορά';
   toast('🔔 Ξυπνητήρι στις '+time+' ('+dtxt+')');
 }
-function clearAlarm(){ if(DB.alarm){DB.alarm.enabled=false;save();} updateAlarmBadge(); closeModals(); toast('Ξυπνητήρι απενεργοποιήθηκε'); }
-function fireAlarm(){
+function clearAlarm(){ if(DB.alarm){DB.alarm.enabled=false;save();} updateAlarmBadge(); if(snoozeTimer){clearTimeout(snoozeTimer);snoozeTimer=null;} closeModals(); toast('Ξυπνητήρι απενεργοποιήθηκε'); }
+let snoozeTimer=null;
+function ring(){
   const a=DB.alarm;if(!a)return;
   const [view,mode]=(a.target||'all|shuffle').split('|');
   curView=view; searchQ=''; const s=$('search'); if(s){s.value='';s.parentElement.classList.remove('has');}
   renderSidebar(); renderTracks();
   const list=viewTracks();
   if(!list.length){toast('🔔 Ξυπνητήρι: δεν υπάρχουν κομμάτια σε αυτή τη λίστα');}
-  else{ shuffle=(mode==='shuffle'); updateToggles(); buildQueue(0); playCurrent(); if(a.fade)setTimeout(fadeIn,300); }
+  else{
+    if(typeof a.vol==='number'){masterVol=a.vol;$('vol').value=a.vol;applyVolume();}
+    shuffle=(mode==='shuffle'); updateToggles(); buildQueue(0); playCurrent();
+    if(a.fade)setTimeout(fadeIn,300);
+  }
+  $('alarmRinging').hidden=false;
   try{ if('Notification' in window && Notification.permission==='granted') new Notification('🔔 Ξυπνητήρι — PLAYLIST 360°',{body:'Ώρα να ξυπνήσεις! ('+a.time+')'}); }catch(e){}
   toast('🔔 Ξυπνητήρι!');
+}
+function fireAlarm(){
+  const a=DB.alarm;if(!a)return;
+  ring();
   if(!a.days||!a.days.length){ a.enabled=false; save(); updateAlarmBadge(); } // μία φορά
 }
 function fadeIn(){
@@ -1204,6 +1236,20 @@ function checkAlarm(){
   if(_alFired===key)return; _alFired=key;
   fireAlarm();
 }
+function snoozeAlarm(){
+  const mins=(DB.alarm&&DB.alarm.snooze)||9;
+  pauseAll(); $('alarmRinging').hidden=true;
+  if(snoozeTimer)clearTimeout(snoozeTimer);
+  snoozeTimer=setTimeout(()=>{snoozeTimer=null;ring();},mins*60000);
+  toast('😴 Σνουζ — ξανά σε '+mins+' λεπτά');
+}
+function stopRing(){
+  pauseAll(); $('alarmRinging').hidden=true;
+  if(snoozeTimer){clearTimeout(snoozeTimer);snoozeTimer=null;}
+  toast('🔕 Ξυπνητήρι σταμάτησε');
+}
+$('arSnooze').onclick=snoozeAlarm;
+$('arStop').onclick=stopRing;
 $('alarmBtn').onclick=openAlarm;
 $('alSet').onclick=setAlarm;
 $('alClear').onclick=clearAlarm;
