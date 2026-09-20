@@ -549,6 +549,9 @@ body.drag::after{
   <div class="box" style="max-width:420px">
     <h3>🎨 Εμφάνιση <span class="x" data-close>×</span></h3>
     <div class="box-b">
+      <div class="field"><label>Έτοιμα θέματα</label>
+        <div class="radio-quick" id="themePresets"></div></div>
+      <div class="divider"></div>
       <div class="field"><label>Χρώμα εφαρμογής</label>
         <div class="radio-quick" id="accentPresets"></div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
@@ -557,7 +560,9 @@ body.drag::after{
         </div>
       </div>
       <div class="divider"></div>
-      <div class="field"><label>Φόντο (εικόνα)</label>
+      <div class="field"><label>Έτοιμα φόντα (gradients)</label>
+        <div class="radio-quick" id="gradPresets"></div></div>
+      <div class="field"><label>Δική σου εικόνα φόντου</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" id="bgPick">🖼️ Επιλογή εικόνας</button>
           <button class="btn" id="bgClear">✖ Αφαίρεση φόντου</button>
@@ -1457,8 +1462,44 @@ function applyTheme(){
   const a1=t.accent||'#e01e2b', a2=t.accent2||'#ff3b45';
   r.setProperty('--red',a1); r.setProperty('--red2',a2); r.setProperty('--redglow',hexA(a2,.45));
   const bg=$('appBg'); const dim=(typeof t.bgDim==='number')?t.bgDim:0.55;
-  if(t.bg){ bg.style.backgroundImage='linear-gradient(rgba(0,0,0,'+dim+'),rgba(0,0,0,'+dim+')), url('+t.bg+')'; document.body.classList.add('has-bg'); }
+  if(t.bg){
+    const isImg=/^data:|^https?:/.test(t.bg);
+    const ov='linear-gradient(rgba(0,0,0,'+dim+'),rgba(0,0,0,'+dim+'))';
+    bg.style.backgroundImage= isImg ? (ov+', url('+t.bg+')') : (ov+', '+t.bg);
+    document.body.classList.add('has-bg');
+  }
   else{ bg.style.backgroundImage=''; document.body.classList.remove('has-bg'); }
+}
+const THEMES=[
+  ['Κλασικό','#e01e2b','#ff3b45',null,0.55],
+  ['Νύχτα','#3b5bff','#6d8bff','linear-gradient(160deg,#0a0e1a,#141a2e 60%,#0a0a12)',0.25],
+  ['Σέπια','#c9922f','#e6b34a','linear-gradient(160deg,#2a1f14,#3a2c1a 60%,#1c140c)',0.25],
+  ['Ωκεανός','#12b0b0','#25d6d6','linear-gradient(160deg,#07222b,#0c3a44 60%,#06181f)',0.25]
+];
+const GRADIENTS=[
+  ['Ηλιοβασίλεμα','linear-gradient(160deg,#3a1030,#5a1836 55%,#1a0a14)'],
+  ['Βαθύ Μωβ','linear-gradient(160deg,#1a0f2e,#2a1a4a 60%,#100a1c)'],
+  ['Ανθρακί','linear-gradient(160deg,#141416,#20202a 60%,#0a0a0c)'],
+  ['Κρασί','linear-gradient(160deg,#2a0f16,#43121f 60%,#180a0e)'],
+  ['Παγετός','linear-gradient(160deg,#0e1a24,#16303f 60%,#0a141c)'],
+  ['Χρυσαφί','linear-gradient(160deg,#241a0a,#3a2c12 60%,#161006)']
+];
+function renderThemes(){
+  const el=$('themePresets');if(!el)return;el.innerHTML='';
+  THEMES.forEach(([n,a1,a2,grad,dim])=>{
+    const b=document.createElement('button');b.className='rq';b.textContent=n;
+    b.style.background=grad||('linear-gradient(135deg,'+a2+','+a1+')');b.style.borderColor='transparent';b.style.color='#fff';
+    b.onclick=()=>{ DB.theme={accent:a1,accent2:a2,bg:grad,bgDim:dim}; save(); applyTheme(); openTheme(); };
+    el.appendChild(b);
+  });
+}
+function renderGradients(){
+  const el=$('gradPresets');if(!el)return;el.innerHTML='';
+  GRADIENTS.forEach(([n,grad])=>{
+    const b=document.createElement('button');b.className='acc-sw';b.title=n;b.style.borderRadius='9px';b.style.width='46px';b.style.background=grad;
+    b.onclick=()=>{ DB.theme=DB.theme||{}; DB.theme.bg=grad; if(typeof DB.theme.bgDim!=='number')DB.theme.bgDim=0.3; save(); applyTheme(); toast('✔ Φόντο: '+n); };
+    el.appendChild(b);
+  });
 }
 function renderAccents(){
   const el=$('accentPresets');if(!el)return;el.innerHTML='';
@@ -1471,7 +1512,7 @@ function renderAccents(){
   });
 }
 function setAccent(a1,a2){ DB.theme=DB.theme||{}; DB.theme.accent=a1; DB.theme.accent2=a2; save(); applyTheme(); renderAccents(); $('accentCustom').value=a1; }
-function openTheme(){ renderAccents(); const t=DB.theme||{}; $('accentCustom').value=t.accent||'#e01e2b'; const dim=(typeof t.bgDim==='number')?t.bgDim:0.55; $('bgDim').value=dim; $('bgDimVal').textContent=Math.round(dim*100)+'%'; openModal('themeModal'); }
+function openTheme(){ renderThemes(); renderGradients(); renderAccents(); const t=DB.theme||{}; $('accentCustom').value=t.accent||'#e01e2b'; const dim=(typeof t.bgDim==='number')?t.bgDim:0.55; $('bgDim').value=dim; $('bgDimVal').textContent=Math.round(dim*100)+'%'; openModal('themeModal'); }
 $('themeBtn').onclick=openTheme;
 $('accentCustom').oninput=e=>{const c=e.target.value;setAccent(c,lighten(c,0.2));};
 $('bgPick').onclick=()=>$('bgInput').click();
