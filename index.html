@@ -21,6 +21,13 @@
   --radius:14px; --sh:0 10px 30px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+#appBg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-repeat:no-repeat}
+body.has-bg{background:#050506}
+body.has-bg .content,body.has-bg .hero{background:transparent}
+body.has-bg .tracks .trk:not(.cur):not(:hover){background:rgba(20,20,24,.35)}
+.acc-sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer}
+.acc-sw.sel{border-color:#fff;box-shadow:0 0 0 2px var(--red2)}
+#accentCustom{width:44px;height:32px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:2px;cursor:pointer}
 html,body{height:100%;margin:0}
 body{
   background:radial-gradient(1200px 700px at 80% -10%,#22121a 0%,transparent 55%),
@@ -332,11 +339,13 @@ body.drag::after{
 </style>
 </head>
 <body>
+<div id="appBg"></div>
 
 <header>
   <button class="btn sm menu-btn" id="menuBtn">☰</button>
   <div class="logo"><span class="disc">💿</span> PLAYLIST <b>360°</b></div>
   <div class="htools">
+    <button class="btn" id="themeBtn" title="Εμφάνιση / Χρώματα / Φόντο">🎨</button>
     <button class="btn" id="sleepBtn" title="Sleep timer">⏰<span id="sleepBadge" class="sleep-badge" hidden></span></button>
     <button class="btn" id="alarmBtn" title="Ξυπνητήρι">🔔<span id="alarmBadge" class="sleep-badge" hidden></span></button>
     <button class="btn" id="fsBtn" title="Πλήρης οθόνη">⛶</button>
@@ -507,8 +516,11 @@ body.drag::after{
 <!-- ALARM MODAL -->
 <div class="modal" id="alarmModal">
   <div class="box" style="max-width:420px">
-    <h3>🔔 Ξυπνητήρι <span class="x" data-close>×</span></h3>
+    <h3>🔔 Ξυπνητήρια <span class="x" data-close>×</span></h3>
     <div class="box-b">
+      <div id="alList" class="rd-results"></div>
+      <div class="divider"></div>
+      <div class="hint" id="alFormTitle">➕ Νέο ξυπνητήρι</div>
       <div class="field"><label>Ώρα</label><input type="time" id="alTime" value="07:30"></div>
       <div class="field"><label>Ημέρες (καμία = μία φορά)</label>
         <div class="radio-quick" id="alDays"></div></div>
@@ -525,9 +537,34 @@ body.drag::after{
       <div class="field"><label>Σνουζ (αναβολή)</label>
         <select id="alSnooze"><option value="5">5 λεπτά</option><option value="9" selected>9 λεπτά</option><option value="10">10 λεπτά</option><option value="15">15 λεπτά</option></select></div>
       <label class="alchk"><input type="checkbox" id="alFade" checked> Σταδιακό δυνάμωμα έντασης (fade-in)</label>
-      <button class="btn red" id="alSet">Ορισμός ξυπνητηριού</button>
-      <button class="btn" id="alClear">✖ Απενεργοποίηση</button>
+      <button class="btn red" id="alSet">💾 Αποθήκευση ξυπνητηριού</button>
+      <button class="btn" id="alClear">Καθάρισμα φόρμας</button>
       <div class="hint">⚠️ Χτυπά μόνο όσο η εφαρμογή είναι ανοιχτή (έστω σε άλλη καρτέλα/παρασκήνιο). Κράτησέ την ανοιχτή ή εγκατέστησέ την σαν εφαρμογή.</div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME / SETTINGS MODAL -->
+<div class="modal" id="themeModal">
+  <div class="box" style="max-width:420px">
+    <h3>🎨 Εμφάνιση <span class="x" data-close>×</span></h3>
+    <div class="box-b">
+      <div class="field"><label>Χρώμα εφαρμογής</label>
+        <div class="radio-quick" id="accentPresets"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+          <input type="color" id="accentCustom" value="#e01e2b" title="Δικό σου χρώμα">
+          <span class="hint">Δικό σου χρώμα</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="field"><label>Φόντο (εικόνα)</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="bgPick">🖼️ Επιλογή εικόνας</button>
+          <button class="btn" id="bgClear">✖ Αφαίρεση φόντου</button>
+        </div>
+        <div class="field" style="margin-top:12px"><label>Σκοτείνιασμα φόντου: <span id="bgDimVal">55%</span></label>
+          <input type="range" id="bgDim" min="0" max="0.85" step="0.05" value="0.55"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -543,6 +580,7 @@ body.drag::after{
 <!-- hidden inputs -->
 <input type="file" id="fileInput" accept="audio/*" multiple style="display:none">
 <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none">
+<input type="file" id="bgInput" accept="image/*" style="display:none">
 <audio id="audio">
 
 <script>
@@ -1161,7 +1199,11 @@ $('sleepCancel').onclick=()=>{ if(!sleepTimer&&!stopAfterTrack){toast('Δεν υ
 
 /* ===== Ξυπνητήρι ===== */
 const AL_DAYS=[['Δε',1],['Τρ',2],['Τε',3],['Πε',4],['Πα',5],['Σα',6],['Κυ',0]];
-let _alSelDays=[], _alFired='';
+const AL_TARGETS={'all|shuffle':'Όλα (τυχαία)','all|order':'Όλα','local|shuffle':'Jukebox (τυχαία)','radio|order':'Ραδιόφωνο','yt|order':'YouTube'};
+let _alSelDays=[], _alFired={}, _editAlarm=null, snoozeTimer=null, _ringing=null;
+function alarms(){ if(!Array.isArray(DB.alarms))DB.alarms=[]; return DB.alarms; }
+function migrateAlarms(){ if(!Array.isArray(DB.alarms)&&DB.alarm){DB.alarms=[Object.assign({id:uid()},DB.alarm)];delete DB.alarm;save();} }
+function daysTxt(days){ return (days&&days.length)?days.slice().sort((a,b)=>((a===0?7:a)-(b===0?7:b))).map(d=>AL_DAYS.find(x=>x[1]===d)[0]).join(',') : 'μία φορά'; }
 function renderAlarmDays(){
   const el=$('alDays');el.innerHTML='';
   AL_DAYS.forEach(([lbl,d])=>{
@@ -1170,36 +1212,49 @@ function renderAlarmDays(){
     el.appendChild(b);
   });
 }
-function openAlarm(){
-  const a=DB.alarm||{};
+function renderAlarmList(){
+  const el=$('alList');if(!el)return;el.innerHTML='';
+  const list=alarms();
+  if(!list.length){ el.innerHTML='<div class="rd-note">Δεν υπάρχουν ξυπνητήρια ακόμα.</div>'; return; }
+  list.forEach(a=>{
+    const row=document.createElement('div');row.className='rd-row';
+    row.innerHTML=`<input type="checkbox" class="al-en" ${a.enabled?'checked':''} title="Ενεργό">
+      <div class="rd-meta"><div class="rd-nm" style="font-size:16px">${a.time}</div><div class="rd-sub">${daysTxt(a.days)} · ${AL_TARGETS[a.target]||'—'} · ${Math.round((a.vol||0.8)*100)}%</div></div>
+      <button class="al-edit" title="Επεξεργασία">✏️</button><button class="al-del" title="Διαγραφή">🗑</button>`;
+    row.querySelector('.al-en').onchange=e=>{a.enabled=e.target.checked;save();updateAlarmBadge();};
+    row.querySelector('.al-edit').onclick=()=>editAlarm(a.id);
+    row.querySelector('.al-del').onclick=()=>{DB.alarms=alarms().filter(x=>x.id!==a.id);save();renderAlarmList();updateAlarmBadge();};
+    el.appendChild(row);
+  });
+}
+function loadForm(a){
   $('alTime').value=a.time||'07:30';
   _alSelDays=Array.isArray(a.days)?a.days.slice():[];
   $('alTarget').value=a.target||'all|shuffle';
   $('alFade').checked=a.fade!==false;
-  const vol=(typeof a.vol==='number')?a.vol:0.8;
-  $('alVol').value=vol; $('alVolVal').textContent=Math.round(vol*100)+'%';
+  const vol=(typeof a.vol==='number')?a.vol:0.8; $('alVol').value=vol; $('alVolVal').textContent=Math.round(vol*100)+'%';
   $('alSnooze').value=String(a.snooze||9);
   renderAlarmDays();
-  openModal('alarmModal');
 }
+function resetForm(){ _editAlarm=null; $('alFormTitle').textContent='➕ Νέο ξυπνητήρι'; loadForm({}); }
+function editAlarm(id){ const a=alarms().find(x=>x.id===id); if(!a)return; _editAlarm=id; $('alFormTitle').textContent='✏️ Επεξεργασία ξυπνητηριού'; loadForm(a); }
+function openAlarm(){ migrateAlarms(); resetForm(); renderAlarmList(); openModal('alarmModal'); }
 $('alVol').oninput=e=>{$('alVolVal').textContent=Math.round(parseFloat(e.target.value)*100)+'%';};
 function updateAlarmBadge(){
-  const a=DB.alarm; const b=$('alarmBadge');
-  if(a&&a.enabled){ $('alarmBtn').classList.add('on'); b.hidden=false; b.textContent=a.time; }
-  else { $('alarmBtn').classList.remove('on'); b.hidden=true; }
+  const n=alarms().filter(a=>a.enabled).length; const b=$('alarmBadge');
+  if(n){ $('alarmBtn').classList.add('on'); b.hidden=false; b.textContent=n; } else { $('alarmBtn').classList.remove('on'); b.hidden=true; }
 }
 function setAlarm(){
   const time=$('alTime').value; if(!time){toast('Βάλε ώρα');return;}
-  DB.alarm={enabled:true,time,days:_alSelDays.slice(),target:$('alTarget').value,fade:$('alFade').checked,vol:parseFloat($('alVol').value),snooze:parseInt($('alSnooze').value)};
-  save(); updateAlarmBadge(); closeModals();
+  const obj={enabled:true,time,days:_alSelDays.slice(),target:$('alTarget').value,fade:$('alFade').checked,vol:parseFloat($('alVol').value),snooze:parseInt($('alSnooze').value)};
+  if(_editAlarm){ const a=alarms().find(x=>x.id===_editAlarm); if(a)Object.assign(a,obj); }
+  else { obj.id=uid(); alarms().push(obj); }
+  save(); updateAlarmBadge(); renderAlarmList(); resetForm();
   if('Notification' in window && Notification.permission==='default'){try{Notification.requestPermission()}catch(e){}}
-  const dtxt=_alSelDays.length?('τις μέρες: '+_alSelDays.map(d=>AL_DAYS.find(x=>x[1]===d)[0]).join(',')):'μία φορά';
-  toast('🔔 Ξυπνητήρι στις '+time+' ('+dtxt+')');
+  toast('🔔 Αποθηκεύτηκε: '+time+' ('+daysTxt(obj.days)+')');
 }
-function clearAlarm(){ if(DB.alarm){DB.alarm.enabled=false;save();} updateAlarmBadge(); if(snoozeTimer){clearTimeout(snoozeTimer);snoozeTimer=null;} closeModals(); toast('Ξυπνητήρι απενεργοποιήθηκε'); }
-let snoozeTimer=null;
-function ring(){
-  const a=DB.alarm;if(!a)return;
+function ring(a){
+  if(!a)return; _ringing=a;
   const [view,mode]=(a.target||'all|shuffle').split('|');
   curView=view; searchQ=''; const s=$('search'); if(s){s.value='';s.parentElement.classList.remove('has');}
   renderSidebar(); renderTracks();
@@ -1214,11 +1269,6 @@ function ring(){
   try{ if('Notification' in window && Notification.permission==='granted') new Notification('🔔 Ξυπνητήρι — PLAYLIST 360°',{body:'Ώρα να ξυπνήσεις! ('+a.time+')'}); }catch(e){}
   toast('🔔 Ξυπνητήρι!');
 }
-function fireAlarm(){
-  const a=DB.alarm;if(!a)return;
-  ring();
-  if(!a.days||!a.days.length){ a.enabled=false; save(); updateAlarmBadge(); } // μία φορά
-}
 function fadeIn(){
   const target=Math.max(0.1,Math.min(1,masterVol*((curTrack&&typeof curTrack.gain==='number')?curTrack.gain:1)));
   let v=0; const steps=40, dv=target/steps;
@@ -1227,20 +1277,22 @@ function fadeIn(){
   const iv=setInterval(()=>{ v+=dv; if(v>=target){setBoth(target);clearInterval(iv);} else setBoth(v); }, 30000/steps);
 }
 function checkAlarm(){
-  const a=DB.alarm; if(!a||!a.enabled)return;
   const now=new Date();
   const hh=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  if(hh!==a.time)return;
-  if(a.days&&a.days.length&&!a.days.includes(now.getDay()))return;
-  const key=now.toDateString()+' '+hh;
-  if(_alFired===key)return; _alFired=key;
-  fireAlarm();
+  alarms().forEach(a=>{
+    if(!a.enabled||a.time!==hh)return;
+    if(a.days&&a.days.length&&!a.days.includes(now.getDay()))return;
+    const key=now.toDateString()+' '+hh;
+    if(_alFired[a.id]===key)return; _alFired[a.id]=key;
+    ring(a);
+    if(!a.days||!a.days.length){ a.enabled=false; save(); updateAlarmBadge(); renderAlarmList(); }
+  });
 }
 function snoozeAlarm(){
-  const mins=(DB.alarm&&DB.alarm.snooze)||9;
+  const a=_ringing; const mins=(a&&a.snooze)||9;
   pauseAll(); $('alarmRinging').hidden=true;
   if(snoozeTimer)clearTimeout(snoozeTimer);
-  snoozeTimer=setTimeout(()=>{snoozeTimer=null;ring();},mins*60000);
+  snoozeTimer=setTimeout(()=>{snoozeTimer=null;ring(a);},mins*60000);
   toast('😴 Σνουζ — ξανά σε '+mins+' λεπτά');
 }
 function stopRing(){
@@ -1252,7 +1304,7 @@ $('arSnooze').onclick=snoozeAlarm;
 $('arStop').onclick=stopRing;
 $('alarmBtn').onclick=openAlarm;
 $('alSet').onclick=setAlarm;
-$('alClear').onclick=clearAlarm;
+$('alClear').onclick=resetForm;
 setInterval(checkAlarm,15000);
 
 /* keyboard */
@@ -1396,13 +1448,55 @@ $('menuBtn').onclick=()=>{$('sidebar').classList.add('open');$('overlay').classL
 $('overlay').onclick=closeSidebar;
 function closeSidebar(){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
 
+/* ============ ΕΜΦΑΝΙΣΗ: χρώματα & φόντο ============ */
+const ACCENTS=[['Κόκκινο','#e01e2b','#ff3b45'],['Μπλε','#1657d6','#3b8bff'],['Μωβ','#7c3aed','#9d5cff'],['Πορτοκαλί','#d9611c','#ff8c3b'],['Ροζ','#d61e86','#ff5cb0'],['Χρυσό','#c99312','#ffcf3b'],['Τιρκουάζ','#0f9e9e','#25d6d6'],['Ασημί','#5a6270','#8b93a3']];
+function lighten(hex,p){const n=parseInt(hex.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;r=Math.round(r+(255-r)*p);g=Math.round(g+(255-g)*p);b=Math.round(b+(255-b)*p);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+function applyTheme(){
+  const t=DB.theme||{}; const r=document.documentElement.style;
+  const a1=t.accent||'#e01e2b', a2=t.accent2||'#ff3b45';
+  r.setProperty('--red',a1); r.setProperty('--red2',a2); r.setProperty('--redglow',hexA(a2,.45));
+  const bg=$('appBg'); const dim=(typeof t.bgDim==='number')?t.bgDim:0.55;
+  if(t.bg){ bg.style.backgroundImage='linear-gradient(rgba(0,0,0,'+dim+'),rgba(0,0,0,'+dim+')), url('+t.bg+')'; document.body.classList.add('has-bg'); }
+  else{ bg.style.backgroundImage=''; document.body.classList.remove('has-bg'); }
+}
+function renderAccents(){
+  const el=$('accentPresets');if(!el)return;el.innerHTML='';
+  const cur=(DB.theme&&DB.theme.accent)||'#e01e2b';
+  ACCENTS.forEach(([n,a1,a2])=>{
+    const b=document.createElement('button');b.className='acc-sw'+(a1.toLowerCase()===cur.toLowerCase()?' sel':'');b.title=n;
+    b.style.background='linear-gradient(135deg,'+a2+','+a1+')';
+    b.onclick=()=>setAccent(a1,a2);
+    el.appendChild(b);
+  });
+}
+function setAccent(a1,a2){ DB.theme=DB.theme||{}; DB.theme.accent=a1; DB.theme.accent2=a2; save(); applyTheme(); renderAccents(); $('accentCustom').value=a1; }
+function openTheme(){ renderAccents(); const t=DB.theme||{}; $('accentCustom').value=t.accent||'#e01e2b'; const dim=(typeof t.bgDim==='number')?t.bgDim:0.55; $('bgDim').value=dim; $('bgDimVal').textContent=Math.round(dim*100)+'%'; openModal('themeModal'); }
+$('themeBtn').onclick=openTheme;
+$('accentCustom').oninput=e=>{const c=e.target.value;setAccent(c,lighten(c,0.2));};
+$('bgPick').onclick=()=>$('bgInput').click();
+$('bgClear').onclick=()=>{ if(DB.theme){DB.theme.bg=null;save();} applyTheme(); toast('Φόντο αφαιρέθηκε'); };
+$('bgDim').oninput=e=>{ const v=parseFloat(e.target.value); $('bgDimVal').textContent=Math.round(v*100)+'%'; DB.theme=DB.theme||{}; DB.theme.bgDim=v; save(); applyTheme(); };
+$('bgInput').onchange=e=>{ const f=e.target.files[0]; e.target.value=''; if(!f)return;
+  const img=new Image();
+  img.onload=()=>{ const max=1600; let w=img.width,h=img.height; const sc=Math.min(1,max/Math.max(w,h)); w=Math.round(w*sc);h=Math.round(h*sc);
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+    let data; try{data=c.toDataURL('image/jpeg',0.82);}catch(err){toast('Σφάλμα εικόνας');return;}
+    DB.theme=DB.theme||{}; DB.theme.bg=data;
+    try{ save(); }catch(err){ toast('⚠️ Πολύ μεγάλη εικόνα'); DB.theme.bg=null; return; }
+    applyTheme(); toast('✔ Φόντο ορίστηκε'); URL.revokeObjectURL(img.src);
+  };
+  img.onerror=()=>toast('Δεν φορτώθηκε η εικόνα');
+  img.src=URL.createObjectURL(f);
+};
+
 /* ============ PWA ============ */
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
 /* ============ INIT ============ */
-load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(typeof DB.vol==='number'?DB.vol:1);updateAlarmBadge();
+load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(typeof DB.vol==='number'?DB.vol:1);migrateAlarms();updateAlarmBadge();applyTheme();
 restoreResume();
 loadYTapi();
 </script>
