@@ -405,6 +405,7 @@ body.drag::after{
         <input type="range" id="vol" min="0" max="1" step="0.01" value="1">
       </div>
       <button class="ctrl" id="ytToggle" title="Εμφάνιση βίντεο">📺</button>
+      <button class="ctrl" id="pipToggle" title="Αιωρούμενο παράθυρο (PiP)">🪟</button>
     </div>
   </div>
   <div class="player-credit">© by <b>Chronis Makris</b></div>
@@ -1038,6 +1039,7 @@ async function enterPiP(){
   }catch(e){toast('Δεν άνοιξε το PiP');}
 }
 $('videoPip').onclick=enterPiP;
+$('pipToggle').onclick=enterPiP;
 function setTheater(v){document.body.classList.toggle('theater',v);$('videoTheater').classList.toggle('on',v);}
 $('videoTheater').onclick=()=>setTheater(!document.body.classList.contains('theater'));
 $('videoStage').addEventListener('click',e=>{if(e.target.id==='videoStage'&&document.body.classList.contains('theater'))setTheater(false);});
