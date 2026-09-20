@@ -113,8 +113,11 @@ body.playing .art .eq{opacity:1}
 .np-sub{color:var(--dim);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* YouTube frame */
-#ytwrap{position:absolute;width:1px;height:1px;overflow:hidden;opacity:.001;pointer-events:none;left:-9999px}
-#ytwrap.visible{position:static;width:100%;max-width:520px;height:290px;opacity:1;left:auto;pointer-events:auto;border-radius:12px;overflow:hidden;margin-top:8px}
+.video-stage{position:relative;background:#000;border-bottom:1px solid var(--line);padding:8px}
+.video-stage #ytwrap{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}
+.video-stage #ytplayer,.video-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#videoClose{position:absolute;top:12px;right:14px;z-index:5;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid var(--line);color:#fff;font-size:16px;line-height:1}
+#videoClose:hover{background:var(--red);border-color:var(--red2)}
 
 /* Track list */
 .tabs{display:flex;gap:6px;padding:12px 16px 0;flex-wrap:wrap}
@@ -244,7 +247,6 @@ body.drag::after{
   .hero{flex-direction:column;text-align:center;padding:18px 16px;gap:14px}
   .art{width:120px;height:120px}
   .np-title{font-size:20px}
-  #ytwrap.visible{max-width:100%;height:210px}
   .pc-txt .pt,.pc-txt .ps{max-width:40vw}
   .vol{width:auto}
   .vol input{width:70px}
@@ -303,8 +305,12 @@ body.drag::after{
         <div class="np-kind" id="npKind">Έτοιμο</div>
         <div class="np-title" id="npTitle">Δεν παίζει τίποτα</div>
         <div class="np-sub" id="npSub">Διάλεξε ή φτιάξε μια λίστα και πάτα play</div>
-        <div id="ytwrap"><div id="ytplayer"></div></div>
       </div>
+    </div>
+
+    <div id="videoStage" class="video-stage" hidden>
+      <button id="videoClose" title="Κλείσιμο βίντεο">✕</button>
+      <div id="ytwrap"><div id="ytplayer"></div></div>
     </div>
 
     <div class="list-h">
@@ -756,7 +762,7 @@ function stopBoth(){
   if(ytPlayer&&ytPlayer.stopVideo){try{ytPlayer.stopVideo()}catch(e){}}
 }
 async function playAudio(t){
-  isYT=false;ytWrapVisible(false);
+  isYT=false;showVideo(false);
   let src;
   if(t.type==='radio')src=t.url;
   else{
@@ -771,7 +777,7 @@ async function playAudio(t){
   audio.play().then(()=>setPlaying(true)).catch(e=>{toast('Δεν παίζει: '+(t.type==='radio'?'ο σταθμός':'το αρχείο'));});
 }
 function playYT(t){
-  isYT=true;
+  isYT=true;showVideo(true);
   if(!ytReady){ytPendingId=t.videoId;ytPendingList=t.listId;toast('Φόρτωση YouTube…');return;}
   ensureYT(()=>{
     if(t.isList&&t.listId){ytPlayer.loadPlaylist({list:t.listId,listType:'playlist'});}
@@ -835,7 +841,7 @@ function updateNowPlaying(){
     navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:kind,album:'PLAYLIST 360°'});
   }
 }
-function ytWrapVisible(v){$('ytwrap').classList.toggle('visible',v)}
+function showVideo(v){const s=$('videoStage');if(s)s.hidden=!v;}
 
 /* ============ SEEK/TIME ============ */
 function fmt(s){if(!s||isNaN(s)||s===Infinity)return '0:00';s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
@@ -925,7 +931,8 @@ function updateToggles(){
   $('shufBtn').classList.toggle('on',shuffle);
   const r=$('repBtn');r.classList.toggle('on',repeat!=='off');r.textContent=repeat==='one'?'🔂':'🔁';
 }
-$('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}ytWrapVisible(!$('ytwrap').classList.contains('visible'))};
+$('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}showVideo($('videoStage').hidden)};
+$('videoClose').onclick=()=>showVideo(false);
 $('playAllBtn').onclick=()=>playAll(false);
 $('shufAllBtn').onclick=()=>playAll(true);
 
