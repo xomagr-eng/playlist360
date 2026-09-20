@@ -113,11 +113,29 @@ body.playing .art .eq{opacity:1}
 .np-sub{color:var(--dim);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* YouTube frame */
-.video-stage{position:relative;background:#000;border-bottom:1px solid var(--line);padding:8px}
-.video-stage #ytwrap{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}
+.video-stage{
+  position:relative;border-bottom:1px solid var(--line);padding:18px 16px 22px;
+  background:radial-gradient(120% 120% at 50% 0%,#241016 0%,#0a0a0c 60%,#050506 100%);
+}
+.video-stage #ytwrap{
+  position:relative;width:100%;max-width:1040px;margin:0 auto;aspect-ratio:16/9;
+  border-radius:14px;overflow:hidden;background:#000;
+  box-shadow:0 20px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.05), 0 0 60px var(--redglow);
+}
 .video-stage #ytplayer,.video-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-#videoClose{position:absolute;top:12px;right:14px;z-index:5;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid var(--line);color:#fff;font-size:16px;line-height:1}
-#videoClose:hover{background:var(--red);border-color:var(--red2)}
+.video-ctrls{position:absolute;top:26px;right:24px;z-index:5;display:flex;gap:8px}
+.video-ctrls button{
+  width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid var(--line);
+  color:#fff;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.video-ctrls button:hover{background:var(--red);border-color:var(--red2);transform:scale(1.08)}
+.video-stage:fullscreen,.video-stage:-webkit-full-screen{
+  display:flex;align-items:center;justify-content:center;padding:0;background:#000;
+}
+.video-stage:fullscreen #ytwrap,.video-stage:-webkit-full-screen #ytwrap{
+  max-width:none;width:min(100vw,177.7vh);height:min(56.25vw,100vh);aspect-ratio:16/9;border-radius:0;box-shadow:none;
+}
+.video-stage:fullscreen .video-ctrls,.video-stage:-webkit-full-screen .video-ctrls{top:16px;right:20px}
 
 /* Track list */
 .tabs{display:flex;gap:6px;padding:12px 16px 0;flex-wrap:wrap}
@@ -309,7 +327,10 @@ body.drag::after{
     </div>
 
     <div id="videoStage" class="video-stage" hidden>
-      <button id="videoClose" title="Κλείσιμο βίντεο">✕</button>
+      <div class="video-ctrls">
+        <button id="videoFull" title="Πλήρης οθόνη βίντεο">⛶</button>
+        <button id="videoClose" title="Κλείσιμο βίντεο">✕</button>
+      </div>
       <div id="ytwrap"><div id="ytplayer"></div></div>
     </div>
 
@@ -933,6 +954,15 @@ function updateToggles(){
 }
 $('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}showVideo($('videoStage').hidden)};
 $('videoClose').onclick=()=>showVideo(false);
+$('videoFull').onclick=()=>{
+  const el=$('videoStage');
+  const fs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(!fs){
+    const req=el.requestFullscreen||el.webkitRequestFullscreen;
+    if(req)req.call(el).catch(()=>toast('Στο iPhone: πάτα το ⛶ μέσα στο βίντεο'));
+    else toast('Στο iPhone: πάτα το ⛶ μέσα στο βίντεο');
+  }else{(document.exitFullscreen||document.webkitExitFullscreen).call(document);}
+};
 $('playAllBtn').onclick=()=>playAll(false);
 $('shufAllBtn').onclick=()=>playAll(true);
 
