@@ -358,6 +358,7 @@ body.drag::after{
 
     <div id="videoStage" class="video-stage" hidden>
       <div class="video-ctrls">
+        <button id="videoPip" title="Αιωρούμενο παράθυρο (PiP)">🪟</button>
         <button id="videoTheater" title="Theater mode (σκοτεινό περιβάλλον)">🎬</button>
         <button id="videoFull" title="Πλήρης οθόνη βίντεο">⛶</button>
         <button id="videoClose" title="Κλείσιμο βίντεο">✕</button>
@@ -1019,6 +1020,24 @@ function updateToggles(){
 }
 $('ytToggle').onclick=()=>{if(!isYT){toast('Δεν παίζει YouTube τώρα');return}showVideo($('videoStage').hidden)};
 $('videoClose').onclick=()=>showVideo(false);
+async function enterPiP(){
+  if(!isYT){toast('Το PiP είναι για βίντεο YouTube');return;}
+  if(!('documentPictureInPicture' in window)){
+    toast('Κουμπί PiP: Chrome/Edge σε υπολογιστή. Στο Android το PiP ανοίγει αυτόματα όταν φεύγεις από τον browser.');return;
+  }
+  if(documentPictureInPicture.window){documentPictureInPicture.window.close();return;}
+  try{
+    const stage=$('videoStage'), wrap=$('ytwrap');
+    const pip=await documentPictureInPicture.requestWindow({width:480,height:270});
+    const st=pip.document.createElement('style');
+    st.textContent='html,body{margin:0;height:100%;background:#000;overflow:hidden}#ytwrap{position:relative;width:100%;height:100%;aspect-ratio:auto;border-radius:0}#ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}';
+    pip.document.head.appendChild(st);
+    pip.document.body.appendChild(wrap);
+    pip.addEventListener('pagehide',()=>{stage.appendChild(wrap);});
+    toast('🪟 Άνοιξε PiP — παίζει σε αιωρούμενο παράθυρο');
+  }catch(e){toast('Δεν άνοιξε το PiP');}
+}
+$('videoPip').onclick=enterPiP;
 function setTheater(v){document.body.classList.toggle('theater',v);$('videoTheater').classList.toggle('on',v);}
 $('videoTheater').onclick=()=>setTheater(!document.body.classList.contains('theater'));
 $('videoStage').addEventListener('click',e=>{if(e.target.id==='videoStage'&&document.body.classList.contains('theater'))setTheater(false);});
