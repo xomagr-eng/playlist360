@@ -1560,7 +1560,11 @@ $('bgInput').onchange=e=>{ const f=e.target.files[0]; e.target.value=''; if(!f)r
 
 /* ============ PWA ============ */
 if('serviceWorker' in navigator && location.protocol!=='file:'){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{ try{reg.update();}catch(e){} }).catch(()=>{});
+  });
+  let _swReloaded=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(_swReloaded)return; _swReloaded=true; location.reload(); });
 }
 
 /* ============ INIT ============ */
