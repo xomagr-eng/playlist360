@@ -115,36 +115,45 @@ body.playing .logo .disc{animation-play-state:running}
   background:linear-gradient(180deg,rgba(224,30,43,.08),transparent);
   border-bottom:1px solid var(--line);
 }
-/* ---------- ΠΙΚΑΠ / TURNTABLE ---------- */
+/* ---------- ΡΕΑΛΙΣΤΙΚΟ ΠΙΚΑΠ / TURNTABLE ---------- */
 .art{
-  width:184px;height:184px;flex-shrink:0;position:relative;background:transparent;box-shadow:none;
-  display:flex;align-items:center;justify-content:center;overflow:visible;
+  width:216px;height:200px;flex-shrink:0;position:relative;overflow:hidden;border-radius:16px;
+  background:linear-gradient(155deg,#3a3a42 0%,#232329 42%,#121216 100%);
+  box-shadow:0 18px 40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.07), inset 0 0 0 1px rgba(0,0,0,.65);
 }
+.tt-led{position:absolute;left:15px;bottom:13px;width:8px;height:8px;border-radius:50%;background:var(--red2);box-shadow:0 0 9px var(--red2);animation:ledpulse 2s ease-in-out infinite}
+@keyframes ledpulse{0%,100%{opacity:.55}50%{opacity:1}}
+.tt-brand{position:absolute;right:12px;bottom:11px;font-size:9px;font-weight:800;letter-spacing:1px;color:var(--dim2);opacity:.8}
 .platter{
-  width:172px;height:172px;border-radius:50%;position:relative;
-  background:
-    radial-gradient(circle at center,#1b1b20 0 20%,transparent 20%),
-    repeating-radial-gradient(circle at center,#0a0a0c 0 1.5px,#141418 1.5px 3px),
-    radial-gradient(circle at 35% 30%,rgba(255,255,255,.06),transparent 45%),
-    #0b0b0d;
-  box-shadow:0 14px 34px rgba(0,0,0,.6), inset 0 0 0 6px #0d0d10, inset 0 0 44px rgba(0,0,0,.85);
-  animation:spin 3.4s linear infinite;animation-play-state:paused;
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);width:168px;height:168px;border-radius:50%;
+  background:radial-gradient(circle,#17171b 0 34%,#0c0c0e 34%);
+  box-shadow:inset 0 0 0 5px #1c1c22, 0 8px 18px rgba(0,0,0,.55), inset 0 0 30px rgba(0,0,0,.7);
+  display:flex;align-items:center;justify-content:center;
 }
-body.playing .platter{animation-play-state:running}
+.vinyl{
+  width:156px;height:156px;border-radius:50%;position:relative;
+  background:
+    repeating-radial-gradient(circle at center,#070709 0 1.2px,#131317 1.2px 2.7px),
+    radial-gradient(circle,#050506 0 100%);
+  animation:spin 3s linear infinite;animation-play-state:paused;
+}
+body.playing .vinyl{animation-play-state:running}
+.sheen{position:absolute;inset:6px;border-radius:50%;pointer-events:none;z-index:2;
+  background:conic-gradient(from 200deg, transparent 0 16%, rgba(255,255,255,.10) 26%, transparent 40% 66%, rgba(255,255,255,.05) 74%, transparent 86% 100%);}
 .vlabel{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;
   background:linear-gradient(135deg,var(--red2),var(--red));display:flex;align-items:center;justify-content:center;
-  font-size:26px;overflow:hidden;box-shadow:0 0 0 5px #08080a, inset 0 0 12px rgba(0,0,0,.35);color:#fff;
+  font-size:23px;overflow:hidden;box-shadow:0 0 0 4px #050506, inset 0 0 10px rgba(0,0,0,.35);color:#fff;
 }
 .vlabel img{width:100%;height:100%;object-fit:cover}
-.vlabel .ph{opacity:.9}
-.spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#d8d8dc;z-index:3;box-shadow:0 0 4px rgba(0,0,0,.7)}
+.vlabel .ph{opacity:.92}
+.spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#9a9aa2);z-index:3;box-shadow:0 1px 3px rgba(0,0,0,.7)}
 .tonearm{
-  position:absolute;top:-8px;right:-14px;width:90px;height:90px;z-index:4;pointer-events:none;
-  transform-origin:76px 13px;transform:rotate(-34deg);transition:transform .7s cubic-bezier(.5,1.5,.5,1);
-  filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));
+  position:absolute;top:2px;right:0;width:120px;height:120px;z-index:4;pointer-events:none;
+  transform-origin:96px 24px;transform:rotate(-28deg);transition:transform .8s cubic-bezier(.5,1.5,.5,1);
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.55));
 }
-body.playing .tonearm{transform:rotate(-7deg)}
+body.playing .tonearm{transform:rotate(-4deg)}
 .np-info{min-width:0;flex:1}
 .np-kind{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red2);font-weight:800}
 .np-title{font-size:26px;font-weight:800;margin:4px 0 4px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -219,6 +228,26 @@ body.theater .video-ctrls{top:20px;right:26px}
 body.reorder .trk .grip{display:inline-block}
 .trk.dragging{opacity:.5;background:var(--bg3)}
 .tracks{flex:1;overflow-y:auto;padding:6px 10px 20px}
+.tracks.vinyl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:16px 12px;padding:16px 16px 30px;align-content:start}
+.vcard{cursor:pointer;text-align:center;position:relative;transition:.15s}
+.vcard:hover{transform:translateY(-3px)}
+.vdisc{width:112px;height:112px;margin:0 auto;border-radius:50%;position:relative;
+  background:repeating-radial-gradient(circle at center,#070709 0 1.2px,#131317 1.2px 2.6px),radial-gradient(circle,#050506 0 100%);
+  box-shadow:0 8px 18px rgba(0,0,0,.5), inset 0 0 0 3px #17171b;}
+.vcard:hover .vdisc{animation:spin 3s linear infinite}
+.vcard.cur .vdisc{animation:spin 2.4s linear infinite;animation-play-state:paused;box-shadow:0 8px 22px var(--redglow), inset 0 0 0 3px var(--red)}
+body.playing .vcard.cur .vdisc{animation-play-state:running}
+.vdisc .vdl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red2),var(--red));display:flex;align-items:center;justify-content:center;font-size:19px;overflow:hidden;color:#fff;box-shadow:0 0 0 3px #050506}
+.vdisc .vdl img{width:100%;height:100%;object-fit:cover}
+.vdisc .vdhole{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#e8e8ec;z-index:2}
+.vdisc .vplay{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;opacity:0;transition:.15s;text-shadow:0 2px 8px #000}
+.vcard:hover .vplay{opacity:1}
+.vcard .vtitle{margin-top:8px;font-size:12px;font-weight:600;line-height:1.25;max-height:2.5em;overflow:hidden;color:var(--txt)}
+.vcard .vsub{font-size:10.5px;color:var(--dim2)}
+.vcard .vrm{position:absolute;top:-4px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid var(--line);color:#fff;font-size:12px;opacity:0;transition:.15s;z-index:3}
+.vcard:hover .vrm{opacity:1}
+.vcard .vrm:hover{background:var(--red);border-color:var(--red2)}
 .trk{
   display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;cursor:pointer;
   transition:.1s;border:1px solid transparent;
@@ -355,8 +384,10 @@ body.drag::after{
   .ctrl{width:38px;height:38px;font-size:16px}
   .ctrl.play{width:48px;height:48px}
   .hero{padding:14px 12px}
-  .art{width:140px;height:140px}
-  .platter{width:132px;height:132px}
+  .art{width:196px;height:180px}
+  .platter{width:150px;height:150px}
+  .vinyl{width:140px;height:140px}
+  .tonearm{top:0;right:2px}
   .tabs{padding-top:10px}
   .list-h .lbl{display:none}
 }
@@ -398,15 +429,24 @@ body.drag::after{
   <section class="content">
     <div class="hero">
       <div class="art" id="art">
+        <span class="tt-led"></span>
+        <span class="tt-brand">HI-FI</span>
         <div class="platter">
-          <div class="vlabel" id="vlabel"><span class="ph">🎵</span></div>
+          <div class="vinyl"><div class="vlabel" id="vlabel"><span class="ph">🎵</span></div></div>
+          <div class="sheen"></div>
           <div class="spindle"></div>
         </div>
-        <svg class="tonearm" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="76" cy="13" r="11" fill="#26262c" stroke="#3a3a42" stroke-width="2"/>
-          <circle cx="76" cy="13" r="3.5" fill="#5a5a63"/>
-          <line x1="76" y1="13" x2="33" y2="67" stroke="#c9ccd2" stroke-width="4.5" stroke-linecap="round"/>
-          <rect x="25" y="60" width="16" height="12" rx="2.5" fill="var(--red2)" transform="rotate(52 33 67)"/>
+        <svg class="tonearm" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="cw" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="#eceef2"/><stop offset="1" stop-color="#7c7f86"/></radialGradient></defs>
+          <line x1="96" y1="24" x2="112" y2="12" stroke="#b9bcc4" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="114" cy="10" r="7.5" fill="url(#cw)"/>
+          <line x1="96" y1="24" x2="50" y2="92" stroke="#c9ccd3" stroke-width="5" stroke-linecap="round"/>
+          <g transform="rotate(52 48 94)">
+            <rect x="38" y="86" width="20" height="13" rx="3" fill="var(--red2)"/>
+            <rect x="46.5" y="98" width="3.5" height="6" rx="1" fill="#9a9aa2"/>
+          </g>
+          <circle cx="96" cy="24" r="11" fill="#2b2b31" stroke="#45454e" stroke-width="2"/>
+          <circle cx="96" cy="24" r="4" fill="#5a5a63"/>
         </svg>
       </div>
       <div class="np-info">
@@ -434,6 +474,7 @@ body.drag::after{
       <button class="btn sm" id="playAllBtn">▶ <span class="lbl">Όλα</span></button>
       <button class="btn sm" id="shufAllBtn">🔀 <span class="lbl">Τυχαία</span></button>
       <button class="btn sm" id="clearViewBtn" title="Καθαρισμός λίστας">🧹 <span class="lbl">Καθαρισμός</span></button>
+      <button class="btn sm" id="viewModeBtn" title="Προβολή Λίστα / Βινύλια">💿 <span class="lbl">Βινύλια</span></button>
       <span class="cnt" id="trkCount">0 κομμάτια</span>
     </div>
     <div class="tracks" id="tracks"></div>
@@ -680,6 +721,7 @@ let shuffle=false, repeat='off'; // off|one|all
 let isYT=false;
 let pendingSeek=0, needsResumeLoad=false, _lastResume=0; // «Συνέχεια»
 let playSource=''; // από ποια λίστα/όψη παίζει
+let viewMode='list'; // 'list' | 'vinyl'
 
 /* ============ ELEMENTS ============ */
 const $=id=>document.getElementById(id);
@@ -740,12 +782,31 @@ function renderTracks(){
   const list=viewTracks();
   $('trkCount').textContent=list.length+' κομμάτια';
   const el=$('tracks');el.innerHTML='';
+  el.classList.toggle('vinyl-grid', viewMode==='vinyl');
   if(!list.length){
+    el.classList.remove('vinyl-grid');
     el.innerHTML=`<div class="empty"><span class="big">🎵</span>
       Δεν υπάρχουν κομμάτια εδώ.<br>Πάτα <b>➕ Προσθήκη</b> — ή <b>σύρε τραγούδια/φακέλους</b> πάνω στο παράθυρο.</div>`;
     return;
   }
   const isPlaylist = !['all','yt','radio','local'].includes(curView);
+  const removeTrack=(t)=>{ if(isPlaylist){const p=DB.playlists.find(x=>x.id===curView);p.trackIds=p.trackIds.filter(id=>id!==t.id);} else {DB.tracks=DB.tracks.filter(x=>x.id!==t.id);DB.playlists.forEach(p=>p.trackIds=p.trackIds.filter(id=>id!==t.id));if(t.handleId)idbDel(t.handleId);} save();renderTracks();renderSidebar(); };
+  if(viewMode==='vinyl'){
+    document.body.classList.remove('reorder');
+    list.forEach((t,i)=>{
+      const c=document.createElement('div');
+      c.className='vcard'+(curTrack&&curTrack.id===t.id?' cur':'');
+      const thumb=(t.type==='youtube'&&t.videoId)?`<img src="https://i.ytimg.com/vi/${t.videoId}/mqdefault.jpg" onerror="this.remove()">`:`<span>${t.type==='radio'?'📻':'🎵'}</span>`;
+      c.innerHTML=`<button class="vrm" title="Αφαίρεση">✕</button>
+        <div class="vdisc"><div class="vdl">${thumb}</div><div class="vdhole"></div><div class="vplay">▶</div></div>
+        <div class="vtitle">${esc(t.title)}</div><div class="vsub">${esc(subFor(t))}</div>`;
+      c.onclick=e=>{if(e.target.classList.contains('vrm'))return;playFromView(i);};
+      c.querySelector('.vrm').onclick=e=>{e.stopPropagation();removeTrack(t);};
+      c.oncontextmenu=e=>{e.preventDefault();addToPlaylistPrompt(t);};
+      el.appendChild(c);
+    });
+    return;
+  }
   const canReorder = isPlaylist && !searchQ;
   document.body.classList.toggle('reorder',canReorder);
   list.forEach((t,i)=>{
@@ -1223,6 +1284,8 @@ function clearView(){
   save(); renderTracks(); renderSidebar(); toast('🧹 Καθαρίστηκε');
 }
 $('clearViewBtn').onclick=clearView;
+function updateViewModeBtn(){ const b=$('viewModeBtn'); if(viewMode==='vinyl'){b.classList.add('on');b.innerHTML='📋 <span class="lbl">Λίστα</span>';b.title='Προβολή: Βινύλια (πάτα για Λίστα)';}else{b.classList.remove('on');b.innerHTML='💿 <span class="lbl">Βινύλια</span>';b.title='Προβολή: Λίστα (πάτα για Βινύλια)';} }
+$('viewModeBtn').onclick=()=>{ viewMode=(viewMode==='vinyl')?'list':'vinyl'; DB.viewMode=viewMode; save(); updateViewModeBtn(); renderTracks(); };
 
 /* volume (master + ένταση ανά κομμάτι) */
 let masterVol=1, _volT;
@@ -1596,7 +1659,7 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 }
 
 /* ============ INIT ============ */
-load();renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();setVol(typeof DB.vol==='number'?DB.vol:1);migrateAlarms();updateAlarmBadge();applyTheme();
+load();if(DB.viewMode)viewMode=DB.viewMode;renderSidebar();renderTracks();renderQuick();renderYTQuick();renderIconPick();updateToggles();updateViewModeBtn();setVol(typeof DB.vol==='number'?DB.vol:1);migrateAlarms();updateAlarmBadge();applyTheme();
 restoreResume();
 loadYTapi();
 </script>
