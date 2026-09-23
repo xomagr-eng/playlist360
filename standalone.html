@@ -115,20 +115,36 @@ body.playing .logo .disc{animation-play-state:running}
   background:linear-gradient(180deg,rgba(224,30,43,.08),transparent);
   border-bottom:1px solid var(--line);
 }
+/* ---------- ΠΙΚΑΠ / TURNTABLE ---------- */
 .art{
-  width:150px;height:150px;flex-shrink:0;border-radius:16px;overflow:hidden;position:relative;
-  background:linear-gradient(135deg,#2a1116,#14141a);box-shadow:var(--sh);
-  display:flex;align-items:center;justify-content:center;
+  width:184px;height:184px;flex-shrink:0;position:relative;background:transparent;box-shadow:none;
+  display:flex;align-items:center;justify-content:center;overflow:visible;
 }
-.art img{width:100%;height:100%;object-fit:cover}
-.art .ph{font-size:56px;opacity:.5}
-.art .eq{position:absolute;bottom:0;left:0;right:0;height:38px;display:flex;align-items:flex-end;gap:3px;padding:0 10px 8px;opacity:0;transition:.3s}
-body.playing .art .eq{opacity:1}
-.art .eq i{flex:1;background:linear-gradient(var(--red2),var(--red));border-radius:2px 2px 0 0;height:20%;animation:bar .9s ease-in-out infinite}
-.art .eq i:nth-child(2){animation-delay:.15s}.art .eq i:nth-child(3){animation-delay:.3s}
-.art .eq i:nth-child(4){animation-delay:.45s}.art .eq i:nth-child(5){animation-delay:.6s}
-.art .eq i:nth-child(6){animation-delay:.25s}.art .eq i:nth-child(7){animation-delay:.5s}
-@keyframes bar{0%,100%{height:15%}50%{height:90%}}
+.platter{
+  width:172px;height:172px;border-radius:50%;position:relative;
+  background:
+    radial-gradient(circle at center,#1b1b20 0 20%,transparent 20%),
+    repeating-radial-gradient(circle at center,#0a0a0c 0 1.5px,#141418 1.5px 3px),
+    radial-gradient(circle at 35% 30%,rgba(255,255,255,.06),transparent 45%),
+    #0b0b0d;
+  box-shadow:0 14px 34px rgba(0,0,0,.6), inset 0 0 0 6px #0d0d10, inset 0 0 44px rgba(0,0,0,.85);
+  animation:spin 3.4s linear infinite;animation-play-state:paused;
+}
+body.playing .platter{animation-play-state:running}
+.vlabel{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red2),var(--red));display:flex;align-items:center;justify-content:center;
+  font-size:26px;overflow:hidden;box-shadow:0 0 0 5px #08080a, inset 0 0 12px rgba(0,0,0,.35);color:#fff;
+}
+.vlabel img{width:100%;height:100%;object-fit:cover}
+.vlabel .ph{opacity:.9}
+.spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#d8d8dc;z-index:3;box-shadow:0 0 4px rgba(0,0,0,.7)}
+.tonearm{
+  position:absolute;top:-8px;right:-14px;width:90px;height:90px;z-index:4;pointer-events:none;
+  transform-origin:76px 13px;transform:rotate(-34deg);transition:transform .7s cubic-bezier(.5,1.5,.5,1);
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));
+}
+body.playing .tonearm{transform:rotate(-7deg)}
 .np-info{min-width:0;flex:1}
 .np-kind{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red2);font-weight:800}
 .np-title{font-size:26px;font-weight:800;margin:4px 0 4px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -210,7 +226,11 @@ body.reorder .trk .grip{display:inline-block}
 .trk:hover{background:var(--bg3)}
 .trk.cur{background:linear-gradient(90deg,rgba(224,30,43,.2),transparent);border-color:var(--red)}
 .trk .num{width:26px;text-align:center;color:var(--dim2);font-size:13px;font-variant-numeric:tabular-nums}
-.trk.cur .num{color:var(--red2)}
+.trk.cur .num{color:transparent;position:relative}
+.trk.cur .num::after{content:'';position:absolute;inset:0;margin:auto;width:22px;height:22px;border-radius:50%;
+  background:repeating-radial-gradient(circle,#000 0 1px,#2a2a2e 1px 2.2px),radial-gradient(circle,var(--red2) 0 32%,#0c0c0e 32%);
+  box-shadow:0 0 0 1px #000;animation:spin 2s linear infinite;animation-play-state:paused}
+body.playing .trk.cur .num::after{animation-play-state:running}
 .trk .badge{font-size:15px;width:22px;text-align:center}
 .trk .meta{flex:1;min-width:0}
 .trk .t{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -334,7 +354,9 @@ body.drag::after{
   .pc-mini{display:none}
   .ctrl{width:38px;height:38px;font-size:16px}
   .ctrl.play{width:48px;height:48px}
-  .hero{display:none}
+  .hero{padding:14px 12px}
+  .art{width:140px;height:140px}
+  .platter{width:132px;height:132px}
   .tabs{padding-top:10px}
   .list-h .lbl{display:none}
 }
@@ -376,8 +398,16 @@ body.drag::after{
   <section class="content">
     <div class="hero">
       <div class="art" id="art">
-        <span class="ph">🎵</span>
-        <div class="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="platter">
+          <div class="vlabel" id="vlabel"><span class="ph">🎵</span></div>
+          <div class="spindle"></div>
+        </div>
+        <svg class="tonearm" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="76" cy="13" r="11" fill="#26262c" stroke="#3a3a42" stroke-width="2"/>
+          <circle cx="76" cy="13" r="3.5" fill="#5a5a63"/>
+          <line x1="76" y1="13" x2="33" y2="67" stroke="#c9ccd2" stroke-width="4.5" stroke-linecap="round"/>
+          <rect x="25" y="60" width="16" height="12" rx="2.5" fill="var(--red2)" transform="rotate(52 33 67)"/>
+        </svg>
       </div>
       <div class="np-info">
         <div class="np-kind" id="npKind">Έτοιμο</div>
@@ -1031,18 +1061,16 @@ function updateNowPlaying(){
   const nf=$('npFrom'); if(srcTxt){nf.hidden=false;nf.textContent='🎧 Παίζει από: '+srcTxt;}else{nf.hidden=true;}
   const g=(typeof t.gain==='number')?t.gain:1;
   $('trkVol').value=g;$('trkVolVal').textContent=Math.round(g*100)+'%';applyVolume();
-  const art=$('art');const ph=art.querySelector('.ph');
-  const mini=$('pcMini');
-  // thumbnail for youtube
-  const old=art.querySelector('img');if(old)old.remove();
-  mini.innerHTML='';
+  const vlabel=$('vlabel'); const mini=$('pcMini');
+  mini.innerHTML=''; vlabel.innerHTML='';
   if(t.type==='youtube'&&t.videoId){
     const im=document.createElement('img');im.src='https://i.ytimg.com/vi/'+t.videoId+'/mqdefault.jpg';
-    im.onerror=()=>im.remove();art.insertBefore(im,ph);
-    const im2=im.cloneNode();mini.appendChild(im2);
+    im.onerror=()=>{im.remove();vlabel.innerHTML='<span class="ph">▶️</span>';};
+    vlabel.appendChild(im);
+    mini.appendChild(im.cloneNode());
   }else{
-    mini.textContent=t.type==='radio'?'📻':'🎵';
-    ph.textContent=t.type==='radio'?'📻':'🎵';
+    const ic=t.type==='radio'?'📻':'🎵';
+    vlabel.innerHTML='<span class="ph">'+ic+'</span>'; mini.textContent=ic;
   }
   if('mediaSession' in navigator){
     navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:kind,album:'PLAYLIST 360°'});
