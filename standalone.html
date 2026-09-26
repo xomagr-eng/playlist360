@@ -267,6 +267,13 @@ body.playing .trk.cur .num::after{animation-play-state:running}
 .trk .rm{opacity:0;color:var(--dim2);padding:4px 6px;font-size:15px}
 .trk:hover .rm{opacity:1}
 .trk .rm:hover{color:var(--red2)}
+.trk .fav,.trk .addpl{background:none;border:none;font-size:15px;padding:3px 5px;opacity:.35;transition:.12s;flex-shrink:0;line-height:1}
+.trk .fav.on{opacity:1}
+.trk:hover .fav,.trk:hover .addpl{opacity:.85}
+.trk .fav:hover,.trk .addpl:hover{opacity:1;transform:scale(1.15)}
+.vcard .vfav{position:absolute;top:-4px;left:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid var(--line);font-size:12px;opacity:0;transition:.15s;z-index:3}
+.vcard .vfav.on{opacity:1;background:rgba(224,30,43,.25);border-color:var(--red)}
+.vcard:hover .vfav{opacity:1}
 .empty{text-align:center;color:var(--dim2);padding:50px 20px;font-size:14px;line-height:1.7}
 .empty .big{font-size:40px;display:block;margin-bottom:10px;opacity:.6}
 
@@ -417,6 +424,7 @@ body.drag::after{
     <div class="side-h" style="border-top:1px solid var(--line)">Γρήγορα</div>
     <div class="pl-list quick">
       <div class="pl-item" data-special="all"><span class="ic">🎼</span><span class="nm">Όλα τα τραγούδια</span></div>
+      <div class="pl-item" data-special="fav"><span class="ic">❤️</span><span class="nm">Αγαπημένα</span></div>
       <div class="pl-item" data-special="local"><span class="ic">🎵</span><span class="nm">Jukebox</span></div>
       <div class="pl-item" data-special="yt"><span class="ic">▶️</span><span class="nm">YouTube</span></div>
       <div class="pl-item" data-special="radio"><span class="ic">📻</span><span class="nm">Ραδιόφωνο</span></div>
@@ -645,6 +653,16 @@ body.drag::after{
         <div class="field" style="margin-top:12px"><label>Σκοτείνιασμα φόντου: <span id="bgDimVal">55%</span></label>
           <input type="range" id="bgDim" min="0" max="0.85" step="0.05" value="0.55"></div>
       </div>
+      <div class="divider"></div>
+      <div class="field"><label>💾 Αντίγραφο ασφαλείας</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="exportBtn">⬇️ Εξαγωγή (backup)</button>
+          <button class="btn" id="importBtn">⬆️ Εισαγωγή</button>
+        </div>
+        <div class="hint">Αποθηκεύει λίστες, YouTube, σταθμούς, αγαπημένα, ξυπνητήρια & θέμα σε αρχείο. (Τα τοπικά αρχεία θέλουν ξανα-προσθήκη σε άλλη συσκευή.)</div>
+      </div>
+      <div class="divider"></div>
+      <label class="alchk"><input type="checkbox" id="needleChk"> 🔊 Ήχος «βελόνας» πικάπ όταν ξεκινά τραγούδι</label>
     </div>
   </div>
 </div>
@@ -661,6 +679,7 @@ body.drag::after{
 <input type="file" id="fileInput" accept="audio/*" multiple style="display:none">
 <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
+<input type="file" id="restoreInput" accept="application/json,.json" style="display:none">
 <audio id="audio">
 
 <script>
@@ -671,9 +690,14 @@ let ytReady=false, ytPlayer=null, ytPendingId=null, ytPendingList=null;
 
 function load(){
   try{const d=JSON.parse(localStorage.getItem(LS));if(d){DB=d;DB.playlists=DB.playlists||[];DB.tracks=DB.tracks||[]}}catch(e){}
-  if(!DB.playlists.length){
-    DB.playlists=[{id:uid(),name:'Αγαπημένα',icon:'❤️',trackIds:[]}];
-  }
+  if(!Array.isArray(DB.favorites))DB.favorites=[];
+}
+function isFav(id){return DB.favorites&&DB.favorites.includes(id);}
+function toggleFav(id){
+  if(!Array.isArray(DB.favorites))DB.favorites=[];
+  if(DB.favorites.includes(id)){DB.favorites=DB.favorites.filter(x=>x!==id);toast('💔 Αφαιρέθηκε από Αγαπημένα');}
+  else{DB.favorites.push(id);toast('❤️ Προστέθηκε στα Αγαπημένα');}
+  save();renderSidebar();renderTracks();
 }
 function save(){
   // strip File objects (not serializable) before saving
@@ -758,6 +782,7 @@ function rawViewTracks(){
   if(curView==='yt')return DB.tracks.filter(t=>t.type==='youtube');
   if(curView==='radio')return DB.tracks.filter(t=>t.type==='radio');
   if(curView==='local')return DB.tracks.filter(t=>t.type==='local');
+  if(curView==='fav')return (DB.favorites||[]).map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
   const p=DB.playlists.find(x=>x.id===curView);
   if(!p)return [];
   return p.trackIds.map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
@@ -772,6 +797,7 @@ function viewTitle(){
   if(curView==='yt')return '▶️ YouTube';
   if(curView==='radio')return '📻 Ραδιόφωνο';
   if(curView==='local')return '🎵 Jukebox';
+  if(curView==='fav')return '❤️ Αγαπημένα';
   const p=DB.playlists.find(x=>x.id===curView);return (p?.icon||'🎵')+' '+(p?.name||'');
 }
 function setView(v){curView=v;searchQ='';const s=$('search');if(s){s.value='';$('search').parentElement.classList.remove('has')}renderSidebar();renderTracks();closeSidebar()}
@@ -789,7 +815,7 @@ function renderTracks(){
       Δεν υπάρχουν κομμάτια εδώ.<br>Πάτα <b>➕ Προσθήκη</b> — ή <b>σύρε τραγούδια/φακέλους</b> πάνω στο παράθυρο.</div>`;
     return;
   }
-  const isPlaylist = !['all','yt','radio','local'].includes(curView);
+  const isPlaylist = !['all','yt','radio','local','fav'].includes(curView);
   const removeTrack=(t)=>{ if(isPlaylist){const p=DB.playlists.find(x=>x.id===curView);p.trackIds=p.trackIds.filter(id=>id!==t.id);} else {DB.tracks=DB.tracks.filter(x=>x.id!==t.id);DB.playlists.forEach(p=>p.trackIds=p.trackIds.filter(id=>id!==t.id));if(t.handleId)idbDel(t.handleId);} save();renderTracks();renderSidebar(); };
   if(viewMode==='vinyl'){
     document.body.classList.remove('reorder');
@@ -797,11 +823,13 @@ function renderTracks(){
       const c=document.createElement('div');
       c.className='vcard'+(curTrack&&curTrack.id===t.id?' cur':'');
       const thumb=(t.type==='youtube'&&t.videoId)?`<img src="https://i.ytimg.com/vi/${t.videoId}/mqdefault.jpg" onerror="this.remove()">`:`<span>${t.type==='radio'?'📻':'🎵'}</span>`;
-      c.innerHTML=`<button class="vrm" title="Αφαίρεση">✕</button>
+      c.innerHTML=`<button class="vfav${isFav(t.id)?' on':''}" title="Αγαπημένα">${isFav(t.id)?'❤️':'🤍'}</button>
+        <button class="vrm" title="Αφαίρεση">✕</button>
         <div class="vdisc"><div class="vdl">${thumb}</div><div class="vdhole"></div><div class="vplay">▶</div></div>
         <div class="vtitle">${esc(t.title)}</div><div class="vsub">${esc(subFor(t))}</div>`;
-      c.onclick=e=>{if(e.target.classList.contains('vrm'))return;playFromView(i);};
+      c.onclick=e=>{if(e.target.closest('.vrm,.vfav'))return;playFromView(i);};
       c.querySelector('.vrm').onclick=e=>{e.stopPropagation();removeTrack(t);};
+      c.querySelector('.vfav').onclick=e=>{e.stopPropagation();toggleFav(t.id);};
       c.oncontextmenu=e=>{e.preventDefault();addToPlaylistPrompt(t);};
       el.appendChild(c);
     });
@@ -816,8 +844,12 @@ function renderTracks(){
     const badge=t.type==='youtube'?'▶️':t.type==='radio'?'📻':t.type==='local'?(t._file||t.handleId?'🎵':'⚠️'):'🎵';
     d.innerHTML=`<span class="grip" title="Σύρε για αλλαγή σειράς">⠿</span><span class="num">${i+1}</span><span class="badge">${badge}</span>
       <div class="meta"><div class="t">${esc(t.title)}</div><div class="s">${esc(t.sub||subFor(t))}</div></div>
+      <button class="fav${isFav(t.id)?' on':''}" title="Αγαπημένα">${isFav(t.id)?'❤️':'🤍'}</button>
+      <button class="addpl" title="Προσθήκη σε λίστα">➕</button>
       <span class="rm">✕</span>`;
-    d.onclick=e=>{if(e.target.classList.contains('rm')||e.target.classList.contains('grip'))return;playFromView(i)};
+    d.querySelector('.fav').onclick=e=>{e.stopPropagation();toggleFav(t.id);};
+    d.querySelector('.addpl').onclick=e=>{e.stopPropagation();addToPlaylistPrompt(t);};
+    d.onclick=e=>{if(e.target.closest('.rm,.grip,.fav,.addpl'))return;playFromView(i)};
     d.querySelector('.rm').onclick=e=>{
       e.stopPropagation();
       if(isPlaylist){const p=DB.playlists.find(x=>x.id===curView);p.trackIds=p.trackIds.filter(id=>id!==t.id);}
@@ -875,7 +907,7 @@ function addToPlaylistPrompt(t){
 }
 
 /* ============ ADD TRACKS ============ */
-function inPlaylist(){return !['all','yt','radio','local'].includes(curView)}
+function inPlaylist(){return !['all','yt','radio','local','fav'].includes(curView)}
 function curPlaylist(){return DB.playlists.find(x=>x.id===curView)}
 function pushTrack(t){
   DB.tracks.push(t);
@@ -1043,6 +1075,7 @@ function playCurrent(){
   if(!t){next();return}
   curTrack=t;
   stopBoth();
+  needleDrop();
   if(t.type==='youtube'){playYT(t);}
   else{playAudio(t);}
   updateNowPlaying();
@@ -1630,7 +1663,8 @@ function renderAccents(){
   });
 }
 function setAccent(a1,a2){ DB.theme=DB.theme||{}; DB.theme.accent=a1; DB.theme.accent2=a2; save(); applyTheme(); renderAccents(); $('accentCustom').value=a1; }
-function openTheme(){ renderThemes(); renderGradients(); renderAccents(); const t=DB.theme||{}; $('accentCustom').value=t.accent||'#e01e2b'; const dim=(typeof t.bgDim==='number')?t.bgDim:0.55; $('bgDim').value=dim; $('bgDimVal').textContent=Math.round(dim*100)+'%'; openModal('themeModal'); }
+function openTheme(){ renderThemes(); renderGradients(); renderAccents(); const t=DB.theme||{}; $('accentCustom').value=t.accent||'#e01e2b'; const dim=(typeof t.bgDim==='number')?t.bgDim:0.55; $('bgDim').value=dim; $('bgDimVal').textContent=Math.round(dim*100)+'%'; $('needleChk').checked=DB.needle!==false; openModal('themeModal'); }
+document.addEventListener('change',e=>{ if(e.target&&e.target.id==='needleChk'){ DB.needle=e.target.checked; save(); if(e.target.checked)needleDrop(); } });
 $('themeBtn').onclick=openTheme;
 $('accentCustom').oninput=e=>{const c=e.target.value;setAccent(c,lighten(c,0.2));};
 $('bgPick').onclick=()=>$('bgInput').click();
@@ -1648,6 +1682,58 @@ $('bgInput').onchange=e=>{ const f=e.target.files[0]; e.target.value=''; if(!f)r
   img.onerror=()=>toast('Δεν φορτώθηκε η εικόνα');
   img.src=URL.createObjectURL(f);
 };
+
+/* ===== Backup / Restore ===== */
+function exportBackup(){
+  const clean={...DB,tracks:DB.tracks.map(t=>{const c={...t};delete c._file;delete c._url;return c;})};
+  const blob=new Blob([JSON.stringify(clean,null,1)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='playlist360-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('⬇️ Το backup κατέβηκε');
+}
+$('exportBtn').onclick=exportBackup;
+$('importBtn').onclick=()=>$('restoreInput').click();
+$('restoreInput').onchange=e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let d; try{d=JSON.parse(r.result);}catch(err){toast('⚠️ Μη έγκυρο αρχείο');return;}
+    if(!d||!Array.isArray(d.tracks)||!Array.isArray(d.playlists)){toast('⚠️ Λάθος δομή backup');return;}
+    if(!confirm('Επαναφορά backup; Θα αντικαταστήσει την τρέχουσα βιβλιοθήκη.'))return;
+    DB=d; DB.favorites=DB.favorites||[]; save();
+    curView='all';searchQ='';
+    if(DB.viewMode)viewMode=DB.viewMode;
+    renderSidebar();renderTracks();updateViewModeBtn();setVol(typeof DB.vol==='number'?DB.vol:1);migrateAlarms();updateAlarmBadge();applyTheme();closeModals();
+    toast('✔ Έγινε επαναφορά');
+  };
+  r.readAsText(f);
+};
+
+/* ===== Ήχος «βελόνας» πικάπ (Web Audio) ===== */
+let _ac=null;
+function needleDrop(){
+  if(DB.needle===false)return;
+  try{
+    _ac=_ac||new (window.AudioContext||window.webkitAudioContext)();
+    const ac=_ac; if(ac.state==='suspended')ac.resume();
+    const t=ac.currentTime;
+    // «κτύπημα» βελόνας
+    const thump=ac.createOscillator(),tg=ac.createGain();
+    thump.type='sine';thump.frequency.setValueAtTime(120,t);thump.frequency.exponentialRampToValueAtTime(45,t+0.12);
+    tg.gain.setValueAtTime(0.0001,t);tg.gain.exponentialRampToValueAtTime(0.22,t+0.01);tg.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+    thump.connect(tg).connect(ac.destination);thump.start(t);thump.stop(t+0.2);
+    // «κρακ» / σκόνη δίσκου
+    const dur=0.5,buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate),ch=buf.getChannelData(0);
+    for(let i=0;i<ch.length;i++){ch[i]=(Math.random()*2-1)*Math.pow(1-i/ch.length,2)*(Math.random()<0.04?1:0.12);}
+    const noise=ac.createBufferSource();noise.buffer=buf;
+    const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=1500;
+    const ng=ac.createGain();ng.gain.setValueAtTime(0.16,t);ng.gain.exponentialRampToValueAtTime(0.02,t+dur);
+    noise.connect(hp).connect(ng).connect(ac.destination);noise.start(t);noise.stop(t+dur);
+  }catch(e){}
+}
 
 /* ============ PWA ============ */
 if('serviceWorker' in navigator && location.protocol!=='file:'){
