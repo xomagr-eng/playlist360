@@ -97,6 +97,11 @@ body.playing .logo .disc{animation-play-state:running}
 .pl-item:hover{background:var(--bg3)}
 .pl-item.active{background:linear-gradient(90deg,rgba(224,30,43,.22),transparent);border-color:var(--red)}
 .pl-item .ic{font-size:18px}
+.pl-disc{width:28px;height:28px;border-radius:50%;flex-shrink:0;position:relative;
+  background:repeating-radial-gradient(circle at center,#050506 0 1px,#191920 1px 2px),radial-gradient(circle,#0a0a0c 0 100%);
+  box-shadow:0 1px 3px rgba(0,0,0,.5),inset 0 0 0 1px #000;display:flex;align-items:center;justify-content:center}
+.pl-disc .pd-em{width:13px;height:13px;border-radius:50%;background:linear-gradient(135deg,var(--red2),var(--red));display:flex;align-items:center;justify-content:center;font-size:8px;box-shadow:0 0 0 1.5px #050506}
+.pl-item.active .pl-disc{animation:spin 3s linear infinite}
 .pl-item .nm{flex:1;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pl-item .ct{font-size:11px;color:var(--dim2);background:var(--bg);padding:2px 7px;border-radius:20px}
 .pl-item .del{opacity:0;color:var(--dim2);font-size:15px;padding:2px 4px}
@@ -348,6 +353,26 @@ body.playing .trk.cur .num::after{animation-play-state:running}
 .rq:hover{border-color:var(--red);color:#fff}
 .divider{height:1px;background:var(--line);margin:2px 0}
 
+/* ---------- IMMERSIVE (οριζόντια = μεγάλη οθόνη πικάπ) ---------- */
+.imm-exit{position:fixed;top:10px;right:12px;z-index:130;width:38px;height:38px;border-radius:50%;
+  background:rgba(0,0,0,.55);border:1px solid var(--line);color:#fff;font-size:18px;display:none}
+body.immersive .imm-exit{display:block}
+body.immersive .sidebar,body.immersive .overlay,body.immersive .list-h,body.immersive .tracks,
+body.immersive header{display:none!important}
+body.immersive .video-stage{display:none!important}
+body.immersive .main{min-height:0}
+body.immersive .content{flex:1}
+body.immersive .hero{display:flex!important;flex-direction:row!important;flex:1;align-items:center;justify-content:center;gap:3vw;padding:1vh 4vw;border-bottom:none;background:transparent;text-align:left!important;overflow:hidden}
+body.immersive .art{transform:scale(1.2);transform-origin:center;margin:0 5vw;flex-shrink:0}
+@media (min-height:460px){ body.immersive .art{transform:scale(1.55)} }
+@media (min-height:640px){ body.immersive .art{transform:scale(1.95)} }
+body.immersive .np-info{max-width:46vw;flex:0 1 auto}
+body.immersive .trkvol{display:none}
+body.immersive .np-title{font-size:clamp(22px,6vh,44px);-webkit-line-clamp:2}
+body.immersive .np-sub{font-size:clamp(13px,2.4vh,18px)}
+body.immersive .np-from{font-size:clamp(12px,2vh,16px)}
+body.immersive .player{padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+
 body.drag::after{
   content:'📥 Άφησε τα τραγούδια / φακέλους εδώ';position:fixed;inset:14px;
   border:3px dashed var(--red2);border-radius:22px;background:rgba(224,30,43,.14);
@@ -402,6 +427,7 @@ body.drag::after{
 </head>
 <body>
 <div id="appBg"></div>
+<button id="immExit" class="imm-exit" hidden title="Έξοδος από πλήρη προβολή">✕</button>
 
 <header>
   <button class="btn sm menu-btn" id="menuBtn">☰</button>
@@ -425,6 +451,7 @@ body.drag::after{
     <div class="pl-list quick">
       <div class="pl-item" data-special="all"><span class="ic">🎼</span><span class="nm">Όλα τα τραγούδια</span></div>
       <div class="pl-item" data-special="fav"><span class="ic">❤️</span><span class="nm">Αγαπημένα</span></div>
+      <div class="pl-item" data-special="recent"><span class="ic">🕘</span><span class="nm">Πρόσφατα</span></div>
       <div class="pl-item" data-special="local"><span class="ic">🎵</span><span class="nm">Jukebox</span></div>
       <div class="pl-item" data-special="yt"><span class="ic">▶️</span><span class="nm">YouTube</span></div>
       <div class="pl-item" data-special="radio"><span class="ic">📻</span><span class="nm">Ραδιόφωνο</span></div>
@@ -693,6 +720,7 @@ function load(){
   if(!Array.isArray(DB.favorites))DB.favorites=[];
 }
 function isFav(id){return DB.favorites&&DB.favorites.includes(id);}
+function pushRecent(id){ if(!Array.isArray(DB.recent))DB.recent=[]; DB.recent=DB.recent.filter(x=>x!==id); DB.recent.unshift(id); if(DB.recent.length>40)DB.recent.length=40; save(); }
 function toggleFav(id){
   if(!Array.isArray(DB.favorites))DB.favorites=[];
   if(DB.favorites.includes(id)){DB.favorites=DB.favorites.filter(x=>x!==id);toast('💔 Αφαιρέθηκε από Αγαπημένα');}
@@ -761,9 +789,9 @@ function renderSidebar(){
   DB.playlists.forEach(p=>{
     const d=document.createElement('div');
     d.className='pl-item'+(curView===p.id?' active':'');
-    d.innerHTML=`<span class="ic">${p.icon||'🎵'}</span><span class="nm">${esc(p.name)}</span>
+    d.innerHTML=`<span class="pl-disc"><span class="pd-em">${p.icon||'🎵'}</span></span><span class="nm">${esc(p.name)}</span>
       <span class="ct">${p.trackIds.length}</span><span class="del">🗑</span>`;
-    d.querySelector('.nm').onclick=d.querySelector('.ic').onclick=d.querySelector('.ct').onclick=()=>setView(p.id);
+    d.querySelector('.nm').onclick=d.querySelector('.pl-disc').onclick=d.querySelector('.ct').onclick=()=>setView(p.id);
     d.onclick=e=>{if(!e.target.classList.contains('del'))setView(p.id)};
     d.querySelector('.del').onclick=e=>{e.stopPropagation();if(confirm('Διαγραφή λίστας «'+p.name+'»;')){DB.playlists=DB.playlists.filter(x=>x.id!==p.id);if(curView===p.id)curView='all';save();renderSidebar();renderTracks()}};
     el.appendChild(d);
@@ -783,6 +811,7 @@ function rawViewTracks(){
   if(curView==='radio')return DB.tracks.filter(t=>t.type==='radio');
   if(curView==='local')return DB.tracks.filter(t=>t.type==='local');
   if(curView==='fav')return (DB.favorites||[]).map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
+  if(curView==='recent')return (DB.recent||[]).map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
   const p=DB.playlists.find(x=>x.id===curView);
   if(!p)return [];
   return p.trackIds.map(id=>DB.tracks.find(t=>t.id===id)).filter(Boolean);
@@ -798,6 +827,7 @@ function viewTitle(){
   if(curView==='radio')return '📻 Ραδιόφωνο';
   if(curView==='local')return '🎵 Jukebox';
   if(curView==='fav')return '❤️ Αγαπημένα';
+  if(curView==='recent')return '🕘 Πρόσφατα ακουσμένα';
   const p=DB.playlists.find(x=>x.id===curView);return (p?.icon||'🎵')+' '+(p?.name||'');
 }
 function setView(v){curView=v;searchQ='';const s=$('search');if(s){s.value='';$('search').parentElement.classList.remove('has')}renderSidebar();renderTracks();closeSidebar()}
@@ -815,7 +845,7 @@ function renderTracks(){
       Δεν υπάρχουν κομμάτια εδώ.<br>Πάτα <b>➕ Προσθήκη</b> — ή <b>σύρε τραγούδια/φακέλους</b> πάνω στο παράθυρο.</div>`;
     return;
   }
-  const isPlaylist = !['all','yt','radio','local','fav'].includes(curView);
+  const isPlaylist = !['all','yt','radio','local','fav','recent'].includes(curView);
   const removeTrack=(t)=>{ if(isPlaylist){const p=DB.playlists.find(x=>x.id===curView);p.trackIds=p.trackIds.filter(id=>id!==t.id);} else {DB.tracks=DB.tracks.filter(x=>x.id!==t.id);DB.playlists.forEach(p=>p.trackIds=p.trackIds.filter(id=>id!==t.id));if(t.handleId)idbDel(t.handleId);} save();renderTracks();renderSidebar(); };
   if(viewMode==='vinyl'){
     document.body.classList.remove('reorder');
@@ -907,7 +937,7 @@ function addToPlaylistPrompt(t){
 }
 
 /* ============ ADD TRACKS ============ */
-function inPlaylist(){return !['all','yt','radio','local','fav'].includes(curView)}
+function inPlaylist(){return !['all','yt','radio','local','fav','recent'].includes(curView)}
 function curPlaylist(){return DB.playlists.find(x=>x.id===curView)}
 function pushTrack(t){
   DB.tracks.push(t);
@@ -1074,6 +1104,7 @@ function playCurrent(){
   const t=DB.tracks.find(x=>x.id===queue[qIndex]);
   if(!t){next();return}
   curTrack=t;
+  pushRecent(t.id);
   stopBoth();
   needleDrop();
   if(t.type==='youtube'){playYT(t);}
@@ -1603,6 +1634,15 @@ $('plName').addEventListener('keydown',e=>{if(e.key==='Enter')$('plCreate').clic
 $('menuBtn').onclick=()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')};
 $('overlay').onclick=closeSidebar;
 function closeSidebar(){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
+
+/* ===== Immersive (οριζόντια = μεγάλη οθόνη) ===== */
+let _immOverride=null; // null=auto, false=ο χρήστης βγήκε
+function isTouchLandscape(){ try{ return matchMedia('(orientation:landscape)').matches && matchMedia('(pointer:coarse)').matches && innerWidth<=1200 && innerWidth>innerHeight; }catch(e){ return false; } }
+function updateImmersive(){ const on=(_immOverride===false)?false:isTouchLandscape(); document.body.classList.toggle('immersive',on); }
+$('immExit').onclick=()=>{ _immOverride=false; updateImmersive(); };
+addEventListener('resize',updateImmersive);
+addEventListener('orientationchange',()=>{ _immOverride=null; setTimeout(updateImmersive,250); });
+updateImmersive();
 
 /* ============ ΕΜΦΑΝΙΣΗ: χρώματα & φόντο ============ */
 const ACCENTS=[['Κόκκινο','#e01e2b','#ff3b45'],['Μπλε','#1657d6','#3b8bff'],['Μωβ','#7c3aed','#9d5cff'],['Πορτοκαλί','#d9611c','#ff8c3b'],['Ροζ','#d61e86','#ff5cb0'],['Χρυσό','#c99312','#ffcf3b'],['Τιρκουάζ','#0f9e9e','#25d6d6'],['Ασημί','#5a6270','#8b93a3']];
