@@ -1,5 +1,5 @@
 /* PLAYLIST 360° — Service Worker (offline app shell) */
-const CACHE = 'pl360-v23';
+const CACHE = 'pl360-v24';
 const ASSETS = [
   './',
   './index.html',
